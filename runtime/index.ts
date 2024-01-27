@@ -771,6 +771,13 @@ const voter: Program = {
         value: "Winner: ",
       },
     },
+    {
+      type: "print",
+      value: {
+        type: "literalString",
+        value: "tie",
+      },
+    },
     // {
     //     type: "gotoIf",
     //     cond: {
