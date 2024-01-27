@@ -653,7 +653,7 @@ const voter: Program = {
     },
     {
       type: "goto",
-      statement: 6,
+      statement: 13,
     },
     {
       type: "assign",
@@ -675,7 +675,7 @@ const voter: Program = {
     },
     {
       type: "goto",
-      statement: 6,
+      statement: 13,
     },
     {
       type: "assign",
@@ -695,6 +695,102 @@ const voter: Program = {
         },
       },
     },
+    {
+      type: "goto",
+      statement: 13,
+    },
+    {
+      type: "assign",
+      lvalue: {
+        type: "variable",
+        variable: "result",
+      },
+      rvalue: {
+        type: "literalString",
+        value: "Tie",
+      },
+    },
+    {
+      type: "goto",
+      statement: 14,
+    },
+    {
+      type: "assign",
+      lvalue: {
+        type: "variable",
+        variable: "result",
+      },
+      rvalue: {
+        type: "literalString",
+        value: "Left",
+      },
+    },
+    {
+      type: "goto",
+      statement: 13,
+    },
+    {
+      type: "assign",
+      lvalue: {
+        type: "variable",
+        variable: "result",
+      },
+      rvalue: {
+        type: "literalString",
+        value: "Right",
+      },
+    },
+
+    //13
+    {
+      type: "gotoIf",
+      cond: {
+        type: "equals",
+        left: {
+          type: "variable",
+          variable: "left",
+        },
+        right: {
+          type: "variable",
+          variable: "right",
+        },
+      },
+      statement: 7,
+    },
+    // //If left greater than right
+    // {
+    //   type: "gotoIf",
+    //   cond: {
+    //     type: "equals",
+    //     left: {
+    //       type: "variable",
+    //       variable: "left",
+    //     },
+    //     right: {
+    //       type: "variable",
+    //       variable: "right",
+    //     },
+    //   },
+    //   statement: 10,
+    // },
+    // //If right greater than left
+    // {
+    //   type: "gotoIf",
+    //   cond: {
+    //     type: "equals",
+    //     left: {
+    //       type: "variable",
+    //       variable: "left",
+    //     },
+    //     right: {
+    //       type: "variable",
+    //       variable: "right",
+    //     },
+    //   },
+    //   statement: 12,
+    // },
+
+    //Actual program
     {
       type: "open",
       tag: "p",
@@ -774,25 +870,10 @@ const voter: Program = {
     {
       type: "print",
       value: {
-        type: "literalString",
-        value: "tie",
+        type: "variable",
+        variable: "result",
       },
     },
-    // {
-    //     type: "gotoIf",
-    //     cond: {
-    //         type: "equals",
-    //         left: {
-    //             type: "variable",
-    //             variable: "left",
-    //         },
-    //         right: {
-    //             type: "variable",
-    //             variable: "right",
-    //         },
-    //     },
-    //     statement: 9,
-    // },
     {
       type: "close",
     },
