@@ -1,4 +1,3 @@
-import exp = require('constants');
 import { readFileSync } from 'fs';
 
 interface LiteralString {
@@ -47,8 +46,6 @@ interface LiteralString {
     | Equals
     | Callback;
 
-type variable = LiteralString | LiteralInteger | LiteralBoolean
-  
   interface Assign {
     type: "assign";
     lvalue: string;
@@ -87,8 +84,14 @@ type variable = LiteralString | LiteralInteger | LiteralBoolean
     type: "goto";
     statement: number;
   }
+
+  interface Gotoif {
+    type: "gotoIf",
+    cond: Expression, 
+    statement: number,
+  }
   
-  type Statement = Assign | Print | Clear | Open | Close | Attribute | End | Goto;
+  type Statement = Assign | Print | Clear | Open | Close | Attribute | End | Goto | Gotoif;
   
   interface Program {
     statements: Statement[];
@@ -103,8 +106,6 @@ function mergeIntoOneString(expression: string[]) {
     }
     return resultString;
 }
-
-console.log(mergeIntoOneString(["PRINT", "hello", "world"]))
 
 function convertToData(expression: string) {
     var expressionStr = expression;
@@ -186,16 +187,7 @@ let arr = readFileLines('example-code/example1.txt');
 for(let i = 0; i < arr.length; i++) {
     var currStatement = arr[i];
     currStatement = currStatement.trim();
-    if(currStatement.indexOf('=') !== currStatement.indexOf("=="))
-    {
-    let assignStatement: Assign = {
-        type: "assign",
-        lvalue: currStatement.slice(0, currStatement.indexOf("=")).trim(),
-        rvalue: convertToExpression(currStatement.slice(currStatement.indexOf('=') + 1)),
-    };
-    insns['statements'].push(assignStatement);
-    }
-    if(currStatement.slice(0,5) === "PRINT")
+    if(currStatement.startsWith("PRINT"))
     {
         if(currStatement[1][0] !== '"')
         {
@@ -214,14 +206,14 @@ for(let i = 0; i < arr.length; i++) {
             insns['statements'].push(printStatement)    
         }
     }
-    else if(currStatement.slice(0,5) === "CLEAR")
+    else if(currStatement.startsWith("CLEAR"))
     { 
         let clearStatement: Clear = {
             type: "clear",
         };
         insns['statements'].push(clearStatement);
     }
-    else if(currStatement.slice(0,4) === "OPEN")
+    else if(currStatement.startsWith("OPEN"))
     {
         let openTag: Open = {
             type: "open",
@@ -229,14 +221,14 @@ for(let i = 0; i < arr.length; i++) {
         };
         insns['statements'].push(openTag);
     }
-    else if(currStatement.slice(0,5) === "CLOSE")
+    else if(currStatement.startsWith("CLOSE"))
     {
         let closeTag: Close = {
             type: "close",
         };
         insns['statements'].push(closeTag);
     }
-    else if(currStatement.slice(9) === "ATTRIBUTE")
+    else if(currStatement.startsWith("ATTRIBUTE"))
     {
         var keyvalue = currStatement.slice(9).trim();
         let attributeStatement: Attribute = {
@@ -246,14 +238,14 @@ for(let i = 0; i < arr.length; i++) {
         };
         insns['statements'].push(attributeStatement);
     }
-    else if(currStatement.slice(0,5) === "CLOSE")
+    else if(currStatement.startsWith("CLOSE"))
     {
         let closeTag: Close = {
             type: "close",
         };
         insns['statements'].push(closeTag);
     }
-    else if(currStatement.slice(0,4) === "GOTO")
+    else if(currStatement.startsWith("GOTO"))
     {
         let goToLine: Goto = {
             type: "goto",
@@ -261,6 +253,23 @@ for(let i = 0; i < arr.length; i++) {
         };
         insns['statements'].push(goToLine);
     }
-    
+    else if(currStatement.startsWith("GOTOIF"))
+    {
+        let goToIfLine: Gotoif = {
+            type: "gotoIf",
+            cond: convertToExpression(currStatement.slice(4, currStatement.lastIndexOf(' '))),
+            statement: Number(currStatement.slice(currStatement.lastIndexOf(' '))),
+        }
+        insns['statements'].push(goToIfLine);
+    }
+    else if(currStatement.indexOf('=') !== -1)
+    {
+        let assignStatement: Assign = {
+            type: "assign",
+            lvalue: currStatement.slice(0, currStatement.indexOf("=")).trim(),
+            rvalue: convertToExpression(currStatement.slice(currStatement.indexOf('=') + 1)),
+        };
+        insns['statements'].push(assignStatement);
+    }
 }
 console.log(insns.statements);

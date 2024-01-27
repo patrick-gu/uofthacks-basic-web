@@ -1,8 +1,20 @@
-CLEAR
-PRINT “The button has been clicked”
-PRINT N$;“times”
-OPEN button
-ATTRIBUTE onclick 10
-PRINT “Click me!”
-CLOSE button
-WAIT
+N = 1
+GOTOIF N = 100 19
+OPEN p
+GOTOIF (N % 15) = 0 8
+GOTOIF (N % 3) = 0 11
+GOTOIF (N % 5) = 0 14
+PRINT N
+GOTO 16
+ATTRIBUTE style "color: purple"
+PRINT "fizzbuzz"
+GOTO 16
+ATTRIBUTE style "color: red"
+PRINT "fizz"
+GOTO 16
+ATTRIBUTE style "color: buzz"
+PRINT "buzz"
+CLOSE p
+N = N + 1
+GOTO 1
+END

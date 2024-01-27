@@ -11,7 +11,7 @@ function mergeIntoOneString(expression) {
 }
 console.log(mergeIntoOneString(["PRINT", "hello", "world"]));
 function convertToData(expression) {
-    var expressionStr = mergeIntoOneString(expression);
+    var expressionStr = expression;
     if (expressionStr === "true" || expressionStr === "false") {
         var data = {
             type: "literalBoolean",
@@ -26,12 +26,47 @@ function convertToData(expression) {
         };
         return data;
     }
-    else {
+    else if (expressionStr[0] == '"' && expressionStr[-1] == '"') {
         var data = {
             type: "literalString",
             value: expressionStr,
         };
         return data;
+    }
+    else {
+        var data = {
+            type: "variable",
+            variable: expressionStr,
+        };
+    }
+}
+function convertToExpression(expressionStr) {
+    expressionStr = expressionStr.trim();
+    if (expressionStr.indexOf("+") !== -1) {
+        var addStatement = {
+            type: "add",
+            left: convertToExpression(expressionStr.slice(0, expressionStr.indexOf("+"))),
+            right: convertToExpression(expressionStr.slice(expressionStr.indexOf("+") + 1)),
+        };
+        return addStatement;
+    }
+    else if (expressionStr.indexOf("==") !== -1) {
+        var equalStatement = {
+            type: "equals",
+            left: convertToExpression(expressionStr.slice(0, expressionStr.indexOf("=="))),
+            right: convertToExpression(expressionStr.slice(expressionStr.indexOf("==") + 1)),
+        };
+        return equalStatement;
+    }
+    else if (expressionStr.slice(0, 8) === "CALLBACK") {
+        var callbackStatement = {
+            type: "callback",
+            line: Number(expressionStr.slice(8).trim()),
+        };
+        return callbackStatement;
+    }
+    else {
+        return convertToData(expressionStr);
     }
 }
 var insns = {
@@ -42,65 +77,72 @@ var readFileLines = function (filename) {
 };
 var arr = readFileLines('example-code/example1.txt');
 for (var i = 0; i < arr.length; i++) {
-    var currStatement = arr[i].split(" ");
-    console.log(JSON.stringify(currStatement));
-    if (currStatement.length >= 2) {
-        if (currStatement[1] === "=") {
-            var assignStatement = {
-                type: "assign",
-                variable: currStatement[0],
-                value: convertToData(currStatement.slice(2)),
-            };
-            insns['statements'].push(assignStatement);
-        }
+    var currStatement = arr[i];
+    currStatement = currStatement.trim();
+    if (currStatement.indexOf('=') !== currStatement.indexOf("==")) {
+        var assignStatement = {
+            type: "assign",
+            lvalue: currStatement.slice(0, currStatement.indexOf("=")).trim(),
+            rvalue: convertToExpression(currStatement.slice(currStatement.indexOf('=') + 1)),
+        };
+        insns['statements'].push(assignStatement);
     }
-    if (currStatement.length >= 1) {
-        if (currStatement[0] === "PRINT") {
+    if (currStatement.slice(0, 5) === "PRINT") {
+        if (currStatement[1][0] !== '"') {
+            var printStatement = {
+                type: "print",
+                value: currStatement.slice(5),
+            };
+            insns['statements'].push(printStatement);
+        }
+        else {
             var printStatement = {
                 type: "print",
                 value: convertToData(currStatement.slice(1)),
             };
             insns['statements'].push(printStatement);
         }
-        else if (currStatement[0] === "CLEAR") {
-            var clearStatement = {
-                type: "clear",
-            };
-            insns['statements'].push(clearStatement);
-        }
-        else if (currStatement[0] === "OPEN") {
-            var openTag = {
-                type: "open",
-                tag: currStatement[1],
-            };
-            insns['statements'].push(openTag);
-        }
-        else if (currStatement[0] === "CLOSE") {
-            var closeTag = {
-                type: "close",
-            };
-            insns['statements'].push(closeTag);
-        }
-        else if (currStatement[0] === "ATTRIBUTE") {
-            var attributeStatement = {
-                type: "attribute",
-                value: convertToData(currStatement.slice(1)),
-            };
-            insns['statements'].push(attributeStatement);
-        }
-        else if (currStatement[0] === "CLOSE") {
-            var closeTag = {
-                type: "close",
-            };
-            insns['statements'].push(closeTag);
-        }
-        else if (currStatement[0] === "GOTO") {
-            var goToLine = {
-                type: "goto",
-                statement: Number(currStatement[1]),
-            };
-            insns['statements'].push(goToLine);
-        }
+    }
+    else if (currStatement.slice(0, 5) === "CLEAR") {
+        var clearStatement = {
+            type: "clear",
+        };
+        insns['statements'].push(clearStatement);
+    }
+    else if (currStatement.slice(0, 4) === "OPEN") {
+        var openTag = {
+            type: "open",
+            tag: currStatement.slice(5).trim(),
+        };
+        insns['statements'].push(openTag);
+    }
+    else if (currStatement.slice(0, 5) === "CLOSE") {
+        var closeTag = {
+            type: "close",
+        };
+        insns['statements'].push(closeTag);
+    }
+    else if (currStatement.slice(9) === "ATTRIBUTE") {
+        var keyvalue = currStatement.slice(9).trim();
+        var attributeStatement = {
+            type: "attribute",
+            key: keyvalue.slice(0, keyvalue.indexOf(' ')),
+            value: keyvalue.slice(keyvalue.indexOf(' ')),
+        };
+        insns['statements'].push(attributeStatement);
+    }
+    else if (currStatement.slice(0, 5) === "CLOSE") {
+        var closeTag = {
+            type: "close",
+        };
+        insns['statements'].push(closeTag);
+    }
+    else if (currStatement.slice(0, 4) === "GOTO") {
+        var goToLine = {
+            type: "goto",
+            statement: Number(currStatement.slice(4).trim()),
+        };
+        insns['statements'].push(goToLine);
     }
 }
 console.log(insns.statements);
