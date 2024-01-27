@@ -5,6 +5,37 @@ body {
     margin-right: auto;
 }
 
+.topper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin-bottom: 5px;
+}
+
+.topper .one {
+    border: rgb(32, 32, 32) solid 3px;
+    border-right: none;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.topper .two {
+    background-color: rgb(32, 32, 32);
+    color: white;
+    padding-top: 5px;
+    padding-bottom: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.topper .three {
+    width: 100%;
+    border: rgb(32, 32, 32) solid 3px;
+    background-color: rgb(50, 50, 50);
+}
+
 nav {
     background-color: lightskyblue;
 }
