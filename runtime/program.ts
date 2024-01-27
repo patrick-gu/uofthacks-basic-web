@@ -31,6 +31,12 @@ interface Equals {
   right: Expression;
 }
 
+interface Greater {
+  type: "greater";
+  left: Expression;
+  right: Expression;
+}
+
 interface VariableExpression {
   type: "variable";
   variable: string;
@@ -54,6 +60,7 @@ type Expression =
   | Add
   | Modulo
   | Equals
+  | Greater
   | VariableExpression
   | Callback
   | ArrayAccess;

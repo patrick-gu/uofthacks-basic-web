@@ -141,6 +141,20 @@ function evaluate(ctx: Context, expr: Expression): Value {
         value: equals(left, right),
       };
     }
+    case "greater": {
+      const left = evaluate(ctx, expr.left);
+      const right = evaluate(ctx, expr.right);
+      if (left.type !== "number" || right.type !== "number") {
+        throw new Error(
+          `Can only compare numbers. Found ${left.type} > ${right.type}.`
+        );
+      }
+      const value = left.value > right.value;
+      return {
+        type: "boolean",
+        value,
+      };
+    }
     case "literalBoolean": {
       return {
         type: "boolean",
