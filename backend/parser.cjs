@@ -149,13 +149,24 @@ for (var i = 0; i < arr.length; i++) {
         insns['statements'].push(closeTag);
     }
     else if (currStatement.startsWith("ATTRIBUTE")) {
-        var keyvalue = currStatement.slice(9).trim();
-        var attributeStatement = {
-            type: "attribute",
-            key: keyvalue.slice(0, keyvalue.indexOf(' ')),
-            value: createCallback(Number(keyvalue.slice(keyvalue.lastIndexOf(' ')))),
-        };
-        insns['statements'].push(attributeStatement);
+        if (currStatement.indexOf("GOTO") !== -1) {
+            var keyvalue = currStatement.slice(9).trim();
+            var attributeStatement = {
+                type: "attribute",
+                key: keyvalue.slice(0, keyvalue.indexOf(' ')),
+                value: createCallback(Number(keyvalue.slice(keyvalue.lastIndexOf(' ')))),
+            };
+            insns['statements'].push(attributeStatement);
+        }
+        else {
+            var keyvalue = currStatement.slice(9).trim();
+            var attributeStatement = {
+                type: "attribute",
+                key: keyvalue.slice(0, keyvalue.indexOf(' ')),
+                value: convertToData(keyvalue.slice(keyvalue.lastIndexOf(' '))),
+            };
+            insns['statements'].push(attributeStatement);
+        }
     }
     else if (currStatement.startsWith("CLOSE")) {
         var closeTag = {

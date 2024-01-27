@@ -118,7 +118,6 @@ interface LiteralString {
 
 function convertToData(expression: string) {
     var expressionStr = expression.trim();
-    console.log(expressionStr);
     if(expressionStr === "true" || expressionStr === "false")
     {
         let data: LiteralBoolean = {
@@ -145,7 +144,6 @@ function convertToData(expression: string) {
     }
     else if(expressionStr.indexOf('(') !== -1)
     {
-        console.log(expressionStr.slice(expression.indexOf('(') + 1, expression.indexOf(')')));
         let arrAccess: ArrayAccess = {
             type: "arrayAccess", 
             array: createVariableFromString(expressionStr.slice(0, expressionStr.indexOf('(')).trim()),
@@ -176,8 +174,6 @@ function convertToExpression(expressionStr: string)
     }
     if(expressionStr.indexOf("+") !== -1)
     {
-        console.log(expressionStr.slice(0, expressionStr.indexOf("+")))
-        console.log(expressionStr.slice(expressionStr.indexOf("+") + 1))
         let addStatement: Add = {
             type: "add",
             left: convertToExpression(expressionStr.slice(0, expressionStr.indexOf("+"))),
@@ -264,7 +260,6 @@ for(let i = 0; i < arr.length; i++) {
     }
     else if(currStatement.startsWith("DIM"))
     {
-        console.log(currStatement.slice(currStatement.indexOf('(') + 1, currStatement.indexOf(')')))
         let dimStatement: Dimension = {
             type: "dim", 
             lvalue: createVariableFromString(currStatement.slice(3, currStatement.indexOf('(')).trim()),
@@ -289,13 +284,26 @@ for(let i = 0; i < arr.length; i++) {
     }
     else if(currStatement.startsWith("ATTRIBUTE"))
     {
-        var keyvalue = currStatement.slice(9).trim();
-        let attributeStatement: Attribute = {
-            type: "attribute",
-            key: keyvalue.slice(0,keyvalue.indexOf(' ')),
-            value: createCallback(Number(keyvalue.slice(keyvalue.lastIndexOf(' ')))),
-        };
-        insns['statements'].push(attributeStatement);
+        if(currStatement.indexOf("GOTO") !== -1)
+        {
+            var keyvalue = currStatement.slice(9).trim();
+            let attributeStatement: Attribute = {
+                type: "attribute",
+                key: keyvalue.slice(0,keyvalue.indexOf(' ')),
+                value: createCallback(Number(keyvalue.slice(keyvalue.lastIndexOf(' ')))),
+            };
+            insns['statements'].push(attributeStatement);
+        }
+        else 
+        {
+            var keyvalue = currStatement.slice(9).trim();
+            let attributeStatement: Attribute = {
+                type: "attribute",
+                key: keyvalue.slice(0,keyvalue.indexOf(' ')),
+                value: convertToData(keyvalue.slice(keyvalue.lastIndexOf(' '))),
+            };
+            insns['statements'].push(attributeStatement);
+        }
     }
     else if(currStatement.startsWith("CLOSE"))
     {
@@ -341,4 +349,4 @@ for(let i = 0; i < arr.length; i++) {
         insns['statements'].push(assignStatement);
     }
 }
-console.log(JSON.stringify(insns.statements, undefined, 2));
+// return insns['statements']
