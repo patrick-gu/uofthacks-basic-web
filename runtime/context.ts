@@ -9,7 +9,8 @@ type Value =
   | { type: "string"; value: string }
   | { type: "number"; value: number }
   | { type: "boolean"; value: boolean }
-  | { type: "callback"; line: number };
+  | { type: "callback"; line: number }
+  | { type: "array"; data: Value[] };
 
 interface Root {
   type: "root";
