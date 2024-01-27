@@ -41,6 +41,12 @@ interface Callback {
   line: number;
 }
 
+interface ArrayAccess {
+  type: "arrayAccess";
+  array: Expression;
+  index: Expression;
+}
+
 type Expression =
   | LiteralString
   | LiteralInteger
@@ -49,12 +55,13 @@ type Expression =
   | Modulo
   | Equals
   | VariableExpression
-  | Callback;
+  | Callback
+  | ArrayAccess;
 
 interface Assign {
   type: "assign";
-  variable: string;
-  value: Expression;
+  lvalue: Expression;
+  rvalue: Expression;
 }
 
 interface Print {
@@ -96,6 +103,12 @@ interface GotoIf {
   statement: number;
 }
 
+interface Dim {
+  type: "dim";
+  lvalue: Expression;
+  length: Expression;
+}
+
 type Statement =
   | Assign
   | Print
@@ -105,7 +118,8 @@ type Statement =
   | Attribute
   | End
   | Goto
-  | GotoIf;
+  | GotoIf
+  | Dim;
 
 interface Program {
   statements: Statement[];

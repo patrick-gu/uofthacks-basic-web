@@ -4,8 +4,9 @@ function execute(prog: Program, ctx: Context) {
     let newIp = ctx.ip + 1;
     switch (stmt.type) {
       case "assign": {
-        const value = evaluate(ctx, stmt.value);
-        ctx.variables.set(stmt.variable, value);
+        const lvalue = resolveLvalue(ctx, stmt.lvalue);
+        const rvalue = evaluate(ctx, stmt.rvalue);
+        lvalue(clone(rvalue));
         break;
       }
       case "attribute": {
@@ -70,11 +71,44 @@ function execute(prog: Program, ctx: Context) {
         }
         break;
       }
+      case "dim": {
+        const lvalue = resolveLvalue(ctx, stmt.lvalue);
+        const length = evaluate(ctx, stmt.length);
+        if (length.type !== "number") {
+          throw new Error("Array length must be a number.");
+        }
+        const arr: Value[] = Array(length.value).map(() => ({
+          type: "number",
+          value: 0,
+        }));
+        const value: Value = {
+          type: "array",
+          data: arr,
+        };
+        lvalue(value);
+        break;
+      }
       default: {
         const _exhaustive: never = stmt;
       }
     }
     ctx.ip = newIp;
+  }
+}
+
+function resolveLvalue(ctx: Context, expr: Expression): (value: Value) => void {
+  if (expr.type === "variable") {
+    return (value) => {
+      ctx.variables.set(expr.variable, value);
+    };
+  } else if (expr.type === "arrayAccess") {
+    const [array, index] = arrayIndex(ctx, expr.array, expr.index);
+
+    return (value) => {
+      array[index] = value;
+    };
+  } else {
+    throw new Error(`Cannot assign to expression.`);
   }
 }
 
@@ -102,29 +136,9 @@ function evaluate(ctx: Context, expr: Expression): Value {
     case "equals": {
       const left = evaluate(ctx, expr.left);
       const right = evaluate(ctx, expr.right);
-      if (left.type !== right.type) {
-        return {
-          type: "boolean",
-          value: false,
-        };
-      }
-      let value: boolean;
-      switch (left.type) {
-        case "boolean":
-        case "string":
-        case "number": {
-          value =
-            left.value ===
-            (right as { value: boolean | string | number }).value;
-          break;
-        }
-        case "callback": {
-          value = left.line === (right as { line: number }).line;
-        }
-      }
       return {
         type: "boolean",
-        value,
+        value: equals(left, right),
       };
     }
     case "literalBoolean": {
@@ -168,6 +182,64 @@ function evaluate(ctx: Context, expr: Expression): Value {
         `Cannot modulo variables of type ${left.type} and ${right.type}`
       );
     }
+    case "arrayAccess": {
+      const [array, index] = arrayIndex(ctx, expr.array, expr.index);
+      return array[index];
+    }
+  }
+}
+
+function arrayIndex(
+  ctx: Context,
+  arrayExpr: Expression,
+  indexExpr: Expression
+): [Value[], number] {
+  const array = evaluate(ctx, arrayExpr);
+  const index = evaluate(ctx, indexExpr);
+  if (array.type !== "array") {
+    throw new Error(`Cannot index non-array of type ${array.type}.`);
+  }
+  if (index.type !== "number") {
+    throw new Error(`Cannot index array with non-number type ${index.type}`);
+  }
+  if (
+    !Number.isInteger(index.value) ||
+    !(0 <= index.value) ||
+    !(index.value < array.data.length)
+  ) {
+    throw new Error(`Index out of bounds: ${index.value}`);
+  }
+  return [array.data, index.value];
+}
+
+function equals(left: Value, right: Value): boolean {
+  if (left.type !== right.type) {
+    return false;
+  }
+  switch (left.type) {
+    case "boolean":
+    case "string":
+    case "number": {
+      return (
+        left.value === (right as { value: boolean | string | number }).value
+      );
+    }
+    case "callback": {
+      return left.line === (right as { line: number }).line;
+    }
+    case "array": {
+      const lData = left.data;
+      const rData = (right as { data: Value[] }).data;
+      if (lData.length !== rData.length) {
+        return false;
+      }
+      for (let i = 0; i < lData.length; i++) {
+        if (!equals(lData[i], rData[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
   }
 }
 
@@ -185,6 +257,26 @@ function toString(value: Value): string {
       } else {
         return "FALSE";
       }
+    }
+    case "array": {
+      return "(" + value.data.map(toString).join(",") + ")";
+    }
+  }
+}
+
+function clone(value: Value): Value {
+  switch (value.type) {
+    case "boolean":
+    case "number":
+    case "string":
+    case "callback": {
+      return value;
+    }
+    case "array": {
+      return {
+        type: "array",
+        data: value.data.map(clone),
+      };
     }
   }
 }
@@ -233,8 +325,11 @@ const buttonClick: Program = {
   statements: [
     {
       type: "assign",
-      variable: "N",
-      value: {
+      lvalue: {
+        type: "variable",
+        variable: "N",
+      },
+      rvalue: {
         type: "literalInteger",
         value: 0,
       },
@@ -245,8 +340,11 @@ const buttonClick: Program = {
     },
     {
       type: "assign",
-      variable: "N",
-      value: {
+      lvalue: {
+        type: "variable",
+        variable: "N",
+      },
+      rvalue: {
         type: "add",
         left: {
           type: "variable",
@@ -321,8 +419,11 @@ const fizzBuzz: Program = {
   statements: [
     {
       type: "assign",
-      variable: "N",
-      value: {
+      lvalue: {
+        type: "variable",
+        variable: "N",
+      },
+      rvalue: {
         type: "literalInteger",
         value: 1,
       },
@@ -481,8 +582,11 @@ const fizzBuzz: Program = {
     },
     {
       type: "assign",
-      variable: "N",
-      value: {
+      lvalue: {
+        type: "variable",
+        variable: "N",
+      },
+      rvalue: {
         type: "add",
         left: {
           type: "variable",
@@ -515,7 +619,7 @@ function main() {
     root,
     currentTag: root,
   };
-  execute(fizzBuzz, ctx);
+  execute(buttonClick, ctx);
 }
 
 main();
