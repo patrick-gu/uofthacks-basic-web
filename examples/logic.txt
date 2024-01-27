@@ -1,0 +1,51 @@
+Variable Assignment
+
+    Simply use = for assigning values to variables. The data type is inferred from the value. For example:
+    n = 1 (integer)
+    pi = 3.14 (float)
+    name = "Alice" (string)
+    flag = True (boolean)
+
+Input/Output
+
+    PRINT: To display output.
+    INPUT: To get input from the user.
+
+Mathematical Operations
+
+    ADD: Addition.
+    SUBSTRACT: Subtraction.
+    MULTIPLY: Multiplication.
+    DIVIDE: Division.
+
+Comparative Operators
+
+    EQUALS: Equality check.
+    NOTEQUALS: Inequality check.
+    LESSTHAN: Less than.
+    GREATERTHAN: Greater than.
+
+Logical Operators
+
+    AND: Logical AND.
+    OR: Logical OR.
+    NOT: Logical NOT.
+
+Control Flow
+
+    IF: Conditional execution.
+    ELSE: Alternative branch for If.
+    WHILE: Loop with a condition at the beginning.
+    FOR: Loop with a predefined number of iterations.
+
+Function Definition and Control
+
+    Use numbers to define line number. For example, 10 for line 10.
+    FUNCTION: Define a function.
+    RETURN: Return a value from a function.
+    CALL: Call a function.
+    GOTO: Go to specified line number
+
+Comments
+
+    ': To add non-executable remarks in the code.

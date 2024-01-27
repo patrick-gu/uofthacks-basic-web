@@ -1,0 +1,20 @@
+10:
+BLOCK
+TEXT "hello"
+ENDBLOCK
+GOTO 20
+
+20:
+BLOCK
+BUTTON "Click me"
+ENDBLOCK
+
+CONVERTS INTO:
+
+<div>
+  <p>hello</p>
+</div>
+
+<div>
+  <button>Click me</button>
+</div>

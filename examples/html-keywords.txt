@@ -1,0 +1,49 @@
+Structural Elements
+
+    BLOCK: Start a generic container (<div> in HTML).
+    ENDBLOCK: End a generic container.
+    HEADER: Start a header section (<header> in HTML).
+    FOOTER: Start a footer section (<footer> in HTML).
+    SECTION: Start a new section (<section> in HTML).
+    ARTICLE: Start an article (<article> in HTML).
+    ASIDE: Start an aside section (<aside> in HTML).
+
+Textual Content
+
+    TEXT: Insert text, possibly within <p> or directly in a container.
+    HEADING1, HEADING2, ..., HEADING6: Insert headings (<h1>, <h2>, ..., <h6>).
+    LINK: Create a hyperlink (<a> tag).
+    LIST: Start a list (<ul> or <ol>).
+    ITEM: List item (<li>).
+    ENDLIST: End a list.
+
+Interactive Elements
+
+    BUTTON: Create a button (<button>).
+    INPUT: Create an input field (<input>).
+    FORM: Start a form (<form>).
+    ENDFORM: End a form.
+
+Media Elements
+
+    IMAGE: Insert an image (<img>).
+    VIDEO: Insert a video (<video>).
+    AUDIO: Insert audio (<audio>).
+
+Control Flow
+
+    GOTO [line number]: Jump to a specific line number.
+    IF [condition] THEN [line number]: Conditional jump (requires a simple way to define conditions).
+    ENDIF: End of an IF block.
+
+Miscellaneous
+
+    COMMENT: Add a comment (not translated into HTML).
+    BREAK: Line break (<br> in HTML).
+    HR: Horizontal rule (<hr>).
+
+Attributes and Styling (Optional, for Advanced Usage)
+
+    CLASS: Assign a CSS class.
+    ID: Assign an ID.
+    STYLE: Inline CSS styling.
