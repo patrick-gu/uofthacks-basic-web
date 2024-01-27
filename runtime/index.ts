@@ -59,6 +59,20 @@ function execute(prog: Program, ctx: Context) {
         });
         break;
       }
+      case "gotoIf": {
+        const cond = evaluate(ctx, stmt.cond);
+        if (cond.type === "boolean") {
+          if (cond.value) {
+            newIp = stmt.statement;
+          }
+        } else {
+          throw new Error(`Cannot write condition of type ${stmt.type}.`);
+        }
+        break;
+      }
+      default: {
+        const _exhaustive: never = stmt;
+      }
     }
     ctx.ip = newIp;
   }
@@ -138,6 +152,22 @@ function evaluate(ctx: Context, expr: Expression): Value {
       }
       return value;
     }
+    case "modulo": {
+      const left = evaluate(ctx, expr.left);
+      const right = evaluate(ctx, expr.right);
+      if (left.type === "number" && right.type === "number") {
+        if (right.value === 0) {
+          throw new Error("Modulo by zero");
+        }
+        return {
+          type: "number",
+          value: left.value % right.value,
+        };
+      }
+      throw new Error(
+        `Cannot modulo variables of type ${left.type} and ${right.type}`
+      );
+    }
   }
 }
 
@@ -199,6 +229,281 @@ function getBody(): HTMLBodyElement {
   return body;
 }
 
+const buttonClick: Program = {
+  statements: [
+    {
+      type: "assign",
+      variable: "N",
+      value: {
+        type: "literalInteger",
+        value: 0,
+      },
+    },
+    {
+      type: "goto",
+      statement: 3,
+    },
+    {
+      type: "assign",
+      variable: "N",
+      value: {
+        type: "add",
+        left: {
+          type: "variable",
+          variable: "N",
+        },
+        right: {
+          type: "literalInteger",
+          value: 1,
+        },
+      },
+    },
+    {
+      type: "clear",
+    },
+    {
+      type: "open",
+      tag: "p",
+    },
+    {
+      type: "print",
+      value: {
+        type: "literalString",
+        value: "The button has been clicked ",
+      },
+    },
+    {
+      type: "print",
+      value: {
+        type: "variable",
+        variable: "N",
+      },
+    },
+    {
+      type: "print",
+      value: {
+        type: "literalString",
+        value: " times!\n",
+      },
+    },
+    {
+      type: "close",
+    },
+    {
+      type: "open",
+      tag: "button",
+    },
+    {
+      type: "attribute",
+      key: "onclick",
+      value: {
+        type: "callback",
+        line: 2,
+      },
+    },
+    {
+      type: "print",
+      value: {
+        type: "literalString",
+        value: "Click me!",
+      },
+    },
+    {
+      type: "close",
+    },
+    {
+      type: "end",
+    },
+  ],
+};
+
+const fizzBuzz: Program = {
+  statements: [
+    {
+      type: "assign",
+      variable: "N",
+      value: {
+        type: "literalInteger",
+        value: 1,
+      },
+    },
+    {
+      type: "gotoIf",
+      cond: {
+        type: "equals",
+        left: {
+          type: "variable",
+          variable: "N",
+        },
+        right: {
+          type: "literalInteger",
+          value: 100,
+        },
+      },
+      statement: 19,
+    },
+    {
+      type: "open",
+      tag: "p",
+    },
+    {
+      type: "gotoIf",
+      cond: {
+        type: "equals",
+        left: {
+          type: "modulo",
+          left: {
+            type: "variable",
+            variable: "N",
+          },
+          right: {
+            type: "literalInteger",
+            value: 15,
+          },
+        },
+        right: {
+          type: "literalInteger",
+          value: 0,
+        },
+      },
+      statement: 8,
+    },
+    {
+      type: "gotoIf",
+      cond: {
+        type: "equals",
+        left: {
+          type: "modulo",
+          left: {
+            type: "variable",
+            variable: "N",
+          },
+          right: {
+            type: "literalInteger",
+            value: 3,
+          },
+        },
+        right: {
+          type: "literalInteger",
+          value: 0,
+        },
+      },
+      statement: 11,
+    },
+    {
+      type: "gotoIf",
+      cond: {
+        type: "equals",
+        left: {
+          type: "modulo",
+          left: {
+            type: "variable",
+            variable: "N",
+          },
+          right: {
+            type: "literalInteger",
+            value: 5,
+          },
+        },
+        right: {
+          type: "literalInteger",
+          value: 0,
+        },
+      },
+      statement: 14,
+    },
+    {
+      type: "print",
+      value: {
+        type: "variable",
+        variable: "N",
+      },
+    },
+    {
+      type: "goto",
+      statement: 16,
+    },
+    {
+      type: "attribute",
+      key: "style",
+      value: {
+        type: "literalString",
+        value: "color: purple",
+      },
+    },
+    {
+      type: "print",
+      value: {
+        type: "literalString",
+        value: "fizzbuzz",
+      },
+    },
+    {
+      type: "goto",
+      statement: 16,
+    },
+    {
+      type: "attribute",
+      key: "style",
+      value: {
+        type: "literalString",
+        value: "color: red",
+      },
+    },
+    {
+      type: "print",
+      value: {
+        type: "literalString",
+        value: "fizz",
+      },
+    },
+    {
+      type: "goto",
+      statement: 16,
+    },
+    {
+      type: "attribute",
+      key: "style",
+      value: {
+        type: "literalString",
+        value: "color: blue",
+      },
+    },
+    {
+      type: "print",
+      value: {
+        type: "literalString",
+        value: "buzz",
+      },
+    },
+    {
+      type: "close",
+    },
+    {
+      type: "assign",
+      variable: "N",
+      value: {
+        type: "add",
+        left: {
+          type: "variable",
+          variable: "N",
+        },
+        right: {
+          type: "literalInteger",
+          value: 1,
+        },
+      },
+    },
+    {
+      type: "goto",
+      statement: 1,
+    },
+    {
+      type: "end",
+    },
+  ],
+};
+
 function main() {
   const root: Root = {
     type: "root",
@@ -210,94 +515,7 @@ function main() {
     root,
     currentTag: root,
   };
-  const prog: Program = {
-    statements: [
-      {
-        type: "assign",
-        variable: "N",
-        value: {
-          type: "literalInteger",
-          value: 0,
-        },
-      },
-      {
-        type: "goto",
-        statement: 3,
-      },
-      {
-        type: "assign",
-        variable: "N",
-        value: {
-          type: "add",
-          left: {
-            type: "variable",
-            variable: "N",
-          },
-          right: {
-            type: "literalInteger",
-            value: 1,
-          },
-        },
-      },
-      {
-        type: "clear",
-      },
-      {
-        type: "open",
-        tag: "p",
-      },
-      {
-        type: "print",
-        value: {
-          type: "literalString",
-          value: "The button has been clicked ",
-        },
-      },
-      {
-        type: "print",
-        value: {
-          type: "variable",
-          variable: "N",
-        },
-      },
-      {
-        type: "print",
-        value: {
-          type: "literalString",
-          value: " times!\n",
-        },
-      },
-      {
-        type: "close",
-      },
-      {
-        type: "open",
-        tag: "button",
-      },
-      {
-        type: "attribute",
-        key: "onclick",
-        value: {
-          type: "callback",
-          line: 2,
-        },
-      },
-      {
-        type: "print",
-        value: {
-          type: "literalString",
-          value: "Click me!",
-        },
-      },
-      {
-        type: "close",
-      },
-      {
-        type: "end",
-      },
-    ],
-  };
-  execute(prog, ctx);
+  execute(fizzBuzz, ctx);
 }
 
 main();

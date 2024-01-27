@@ -19,6 +19,12 @@ interface Add {
   right: Expression;
 }
 
+interface Modulo {
+  type: "modulo";
+  left: Expression;
+  right: Expression;
+}
+
 interface Equals {
   type: "equals";
   left: Expression;
@@ -40,6 +46,7 @@ type Expression =
   | LiteralInteger
   | LiteralBoolean
   | Add
+  | Modulo
   | Equals
   | VariableExpression
   | Callback;
@@ -83,7 +90,22 @@ interface Goto {
   statement: number;
 }
 
-type Statement = Assign | Print | Clear | Open | Close | Attribute | End | Goto;
+interface GotoIf {
+  type: "gotoIf";
+  cond: Expression;
+  statement: number;
+}
+
+type Statement =
+  | Assign
+  | Print
+  | Clear
+  | Open
+  | Close
+  | Attribute
+  | End
+  | Goto
+  | GotoIf;
 
 interface Program {
   statements: Statement[];
