@@ -1,1 +1,1 @@
-console.log(JSON.stringify("1+ 1: 2"));
+console.log(Number(" 1".trim()));

@@ -38,7 +38,7 @@ interface LiteralString {
   }
   
   type Expression =
-    | LiteralString
+    LiteralString
     | LiteralInteger
     | LiteralBoolean
     | Variable
@@ -86,29 +86,25 @@ interface LiteralString {
   }
 
   interface Gotoif {
-    type: "gotoIf",
-    cond: Expression, 
-    statement: number,
+    type: "gotoIf";
+    cond: Expression;
+    statement: number;
+  }
+
+  interface Dimension {
+    type: "dim";
+    lvalue: Variable;
+    length: Expression;
   }
   
-  type Statement = Assign | Print | Clear | Open | Close | Attribute | End | Goto | Gotoif;
+  type Statement = Assign | Print | Clear | Open | Close | Attribute | End | Goto | Gotoif | Dimension;
   
   interface Program {
     statements: Statement[];
   }
 
-function mergeIntoOneString(expression: string[]) {
-    var resultString = expression[0];
-    for(var i = 1; i < expression.length; i++)
-    {
-        resultString = resultString.concat(" ");
-        resultString = resultString.concat(expression[i]);
-    }
-    return resultString;
-}
-
 function convertToData(expression: string) {
-    var expressionStr = expression;
+    var expressionStr = expression.trim();
     if(expressionStr === "true" || expressionStr === "false")
     {
         let data: LiteralBoolean = {
@@ -117,7 +113,7 @@ function convertToData(expression: string) {
         };
         return data;
     }
-    else if(!isNaN(Number(expressionStr)))
+    else if(!isNaN(Number(expressionStr)) && expressionStr !== "")
     {
         let data: LiteralInteger = {
             type: "literalInteger",
@@ -129,7 +125,7 @@ function convertToData(expression: string) {
     {
         let data: LiteralString = {
             type: "literalString", 
-            value: expressionStr,
+            value: expressionStr.slice(1, expressionStr.length - 1),
         };
         return data;
     }
@@ -139,14 +135,19 @@ function convertToData(expression: string) {
             type: "variable",
             variable: expressionStr,
         }
+        return data;
     }
 }
+
+console.log(convertToData("len"))
 
 function convertToExpression(expressionStr: string)
 {
     expressionStr = expressionStr.trim();
     if(expressionStr.indexOf("+") !== -1)
     {
+        console.log(expressionStr.slice(0, expressionStr.indexOf("+")))
+        console.log(expressionStr.slice(expressionStr.indexOf("+") + 1))
         let addStatement: Add = {
             type: "add",
             left: convertToExpression(expressionStr.slice(0, expressionStr.indexOf("+"))),
@@ -154,12 +155,12 @@ function convertToExpression(expressionStr: string)
         };
         return addStatement;
     }
-    else if(expressionStr.indexOf("==") !== -1)
+    else if(expressionStr.indexOf("=") !== -1)
     {
         let equalStatement: Equals = {
             type: "equals",
-            left: convertToExpression(expressionStr.slice(0, expressionStr.indexOf("=="))),
-            right: convertToExpression(expressionStr.slice(expressionStr.indexOf("==") + 1)),
+            left: convertToExpression(expressionStr.slice(0, expressionStr.indexOf("="))),
+            right: convertToExpression(expressionStr.slice(expressionStr.indexOf("=") + 1)),
         }
         return equalStatement;
     }
@@ -175,6 +176,15 @@ function convertToExpression(expressionStr: string)
     {
         return convertToData(expressionStr);
     }
+}
+
+function createVariableFromString(varname: string)
+{
+    let varFromString: Variable = {
+        type: "variable",
+        variable: varname,
+    };
+    return varFromString;
 }
 
 let insns: Program = {
@@ -213,6 +223,16 @@ for(let i = 0; i < arr.length; i++) {
         };
         insns['statements'].push(clearStatement);
     }
+    else if(currStatement.startsWith("DIM"))
+    {
+        console.log(currStatement.slice(currStatement.indexOf('(') + 1, currStatement.indexOf(')')))
+        let dimStatement: Dimension = {
+            type: "dim", 
+            lvalue: createVariableFromString(currStatement.slice(3, currStatement.indexOf('(')).trim()),
+            length: convertToExpression(currStatement.slice(currStatement.indexOf('(') + 1, currStatement.indexOf(')')).trim())
+        };
+        insns['statements'].push(dimStatement);
+    }
     else if(currStatement.startsWith("OPEN"))
     {
         let openTag: Open = {
@@ -245,14 +265,6 @@ for(let i = 0; i < arr.length; i++) {
         };
         insns['statements'].push(closeTag);
     }
-    else if(currStatement.startsWith("GOTO"))
-    {
-        let goToLine: Goto = {
-            type: "goto",
-            statement: Number(currStatement.slice(4).trim()),
-        };
-        insns['statements'].push(goToLine);
-    }
     else if(currStatement.startsWith("GOTOIF"))
     {
         let goToIfLine: Gotoif = {
@@ -262,6 +274,15 @@ for(let i = 0; i < arr.length; i++) {
         }
         insns['statements'].push(goToIfLine);
     }
+    else if(currStatement.startsWith("GOTO"))
+    {
+        let goToLine: Goto = {
+            type: "goto",
+            statement: Number(currStatement.slice(4).trim()),
+        };
+        insns['statements'].push(goToLine);
+    }
+    
     else if(currStatement.indexOf('=') !== -1)
     {
         let assignStatement: Assign = {
