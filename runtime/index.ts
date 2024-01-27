@@ -148,7 +148,7 @@ function evaluate(ctx: Context, expr: Expression): Value {
       const right = evaluate(ctx, expr.right);
       if (left.type !== "number" || right.type !== "number") {
         throw new Error(
-          `Can only compare numbers. Found ${left.type} > ${right.type}.`
+          `Can only compare numbers. Found ${left.type} > ${right.type}.`,
         );
       }
       const value = left.value > right.value;
@@ -726,7 +726,7 @@ const voter: Program = {
     },
     {
       type: "goto",
-      statement: 14,
+      statement: 16,
     },
     {
       type: "assign",
@@ -741,7 +741,7 @@ const voter: Program = {
     },
     {
       type: "goto",
-      statement: 13,
+      statement: 16,
     },
     {
       type: "assign",
@@ -753,6 +753,10 @@ const voter: Program = {
         type: "literalString",
         value: "Right",
       },
+    },
+    {
+      type: "goto",
+      statement: 16,
     },
 
     //13
@@ -771,38 +775,38 @@ const voter: Program = {
       },
       statement: 7,
     },
-    // //If left greater than right
-    // {
-    //   type: "gotoIf",
-    //   cond: {
-    //     type: "equals",
-    //     left: {
-    //       type: "variable",
-    //       variable: "left",
-    //     },
-    //     right: {
-    //       type: "variable",
-    //       variable: "right",
-    //     },
-    //   },
-    //   statement: 10,
-    // },
-    // //If right greater than left
-    // {
-    //   type: "gotoIf",
-    //   cond: {
-    //     type: "equals",
-    //     left: {
-    //       type: "variable",
-    //       variable: "left",
-    //     },
-    //     right: {
-    //       type: "variable",
-    //       variable: "right",
-    //     },
-    //   },
-    //   statement: 12,
-    // },
+    //If left greater than right
+    {
+      type: "gotoIf",
+      cond: {
+        type: "greater",
+        left: {
+          type: "variable",
+          variable: "left",
+        },
+        right: {
+          type: "variable",
+          variable: "right",
+        },
+      },
+      statement: 9,
+    },
+    //If right greater than left
+    {
+      type: "gotoIf",
+      cond: {
+        type: "greater",
+        left: {
+          type: "variable",
+          variable: "right",
+        },
+        right: {
+          type: "variable",
+          variable: "left",
+        },
+      },
+      statement: 11,
+    },
 
     //Actual program
     {
