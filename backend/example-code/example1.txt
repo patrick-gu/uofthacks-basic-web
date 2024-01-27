@@ -1,0 +1,8 @@
+CLEAR
+PRINT “The button has been clicked”
+PRINT N$;“times”
+OPEN button
+ATTRIBUTE onclick 10
+PRINT “Click me!”
+CLOSE button
+WAIT
