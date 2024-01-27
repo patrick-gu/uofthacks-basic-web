@@ -14,6 +14,12 @@ interface LiteralString {
     type: "literalBoolean";
     value: boolean;
   }
+
+  interface ArrayAccess {
+    type: "arrayAccess"; 
+    array: Variable; 
+    index: Variable;
+  }
   
   interface Add {
     type: "add";
@@ -41,6 +47,7 @@ interface LiteralString {
     LiteralString
     | LiteralInteger
     | LiteralBoolean
+    | ArrayAccess
     | Variable
     | Add
     | Equals
@@ -48,7 +55,7 @@ interface LiteralString {
 
   interface Assign {
     type: "assign";
-    lvalue: Variable;
+    lvalue: Expression;
     rvalue: Expression;
   }
   
@@ -73,7 +80,7 @@ interface LiteralString {
   interface Attribute {
     type: "attribute";
     key: string;
-    value: string;
+    value: Expression;
   }
   
   interface End {
@@ -96,8 +103,14 @@ interface LiteralString {
     lvalue: Variable;
     length: Expression;
   }
+
+  interface Bind {
+    type: "bind";
+    key: string;
+    lvalue: Variable;
+  }
   
-  type Statement = Assign | Print | Clear | Open | Close | Attribute | End | Goto | Gotoif | Dimension;
+  type Statement = Assign | Print | Clear | Open | Close | Attribute | End | Goto | Gotoif | Dimension | Bind;
   
   interface Program {
     statements: Statement[];
@@ -105,6 +118,7 @@ interface LiteralString {
 
 function convertToData(expression: string) {
     var expressionStr = expression.trim();
+    console.log(expressionStr);
     if(expressionStr === "true" || expressionStr === "false")
     {
         let data: LiteralBoolean = {
@@ -121,13 +135,23 @@ function convertToData(expression: string) {
         };
         return data;
     }
-    else if(expressionStr[0] == '"' && expressionStr[-1] == '"')
+    else if(expressionStr[0] == '"')
     {
         let data: LiteralString = {
             type: "literalString", 
             value: expressionStr.slice(1, expressionStr.length - 1),
         };
         return data;
+    }
+    else if(expressionStr.indexOf('(') !== -1)
+    {
+        console.log(expressionStr.slice(expression.indexOf('(') + 1, expression.indexOf(')')));
+        let arrAccess: ArrayAccess = {
+            type: "arrayAccess", 
+            array: createVariableFromString(expressionStr.slice(0, expressionStr.indexOf('(')).trim()),
+            index: createVariableFromString(expressionStr.slice(expression.indexOf('('), expression.indexOf(')') - 1)),
+        };
+        return arrAccess
     }
     else 
     {
@@ -139,11 +163,17 @@ function convertToData(expression: string) {
     }
 }
 
-console.log(convertToData("len"))
-
 function convertToExpression(expressionStr: string)
 {
     expressionStr = expressionStr.trim();
+    if(expressionStr === "\"\"")
+    {
+        let emptyString: LiteralString = {
+            type: "literalString", 
+            value: "",
+        };
+        return emptyString
+    }
     if(expressionStr.indexOf("+") !== -1)
     {
         console.log(expressionStr.slice(0, expressionStr.indexOf("+")))
@@ -187,6 +217,15 @@ function createVariableFromString(varname: string)
     return varFromString;
 }
 
+function createCallback(lineno: number)
+{
+    let callbackStatement: Callback = {
+        type: "callback",
+        line: lineno,
+    };
+    return callbackStatement;
+}
+
 let insns: Program = {
     statements: [],
 };
@@ -199,11 +238,11 @@ for(let i = 0; i < arr.length; i++) {
     currStatement = currStatement.trim();
     if(currStatement.startsWith("PRINT"))
     {
-        if(currStatement[1][0] !== '"')
+        if(currStatement.indexOf('"') !== -1)
         {
             let printStatement: Print = {
                 type: "print",
-                value: currStatement.slice(5),
+                value: currStatement.slice(currStatement.indexOf('"') + 1,currStatement.lastIndexOf('"')),
             };
             insns['statements'].push(printStatement);
         }
@@ -211,7 +250,7 @@ for(let i = 0; i < arr.length; i++) {
         {
             let printStatement: Print = {
                 type: "print", 
-                value: convertToData(currStatement.slice(1)),
+                value: convertToData(currStatement.slice(currStatement.indexOf(' '))),
             }
             insns['statements'].push(printStatement)    
         }
@@ -254,7 +293,7 @@ for(let i = 0; i < arr.length; i++) {
         let attributeStatement: Attribute = {
             type: "attribute",
             key: keyvalue.slice(0,keyvalue.indexOf(' ')),
-            value: keyvalue.slice(keyvalue.indexOf(' ')),
+            value: createCallback(Number(keyvalue.slice(keyvalue.lastIndexOf(' ')))),
         };
         insns['statements'].push(attributeStatement);
     }
@@ -282,12 +321,21 @@ for(let i = 0; i < arr.length; i++) {
         };
         insns['statements'].push(goToLine);
     }
-    
+    else if(currStatement.startsWith("BIND"))
+    {
+        var keyvalue = currStatement.slice(4).trim();
+        let bindStatement: Bind = {
+            type: "bind", 
+            key: keyvalue.slice(0, keyvalue.indexOf(' ')),
+            lvalue: createVariableFromString(keyvalue.slice(keyvalue.lastIndexOf(' ') + 1)),
+        };
+        insns['statements'].push(bindStatement);
+    }
     else if(currStatement.indexOf('=') !== -1)
     {
         let assignStatement: Assign = {
             type: "assign",
-            lvalue: createVariableFromString(currStatement.slice(0, currStatement.indexOf("=")).trim()),
+            lvalue: convertToData(currStatement.slice(0, currStatement.indexOf("=")).trim()),
             rvalue: convertToExpression(currStatement.slice(currStatement.indexOf('=') + 1)),
         };
         insns['statements'].push(assignStatement);

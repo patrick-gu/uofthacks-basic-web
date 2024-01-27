@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = require("fs");
 function convertToData(expression) {
     var expressionStr = expression.trim();
+    console.log(expressionStr);
     if (expressionStr === "true" || expressionStr === "false") {
         var data = {
             type: "literalBoolean",
@@ -17,12 +18,21 @@ function convertToData(expression) {
         };
         return data;
     }
-    else if (expressionStr[0] == '"' && expressionStr[-1] == '"') {
+    else if (expressionStr[0] == '"') {
         var data = {
             type: "literalString",
             value: expressionStr.slice(1, expressionStr.length - 1),
         };
         return data;
+    }
+    else if (expressionStr.indexOf('(') !== -1) {
+        console.log(expressionStr.slice(expression.indexOf('(') + 1, expression.indexOf(')')));
+        var arrAccess = {
+            type: "arrayAccess",
+            array: createVariableFromString(expressionStr.slice(0, expressionStr.indexOf('(')).trim()),
+            index: createVariableFromString(expressionStr.slice(expression.indexOf('('), expression.indexOf(')') - 1)),
+        };
+        return arrAccess;
     }
     else {
         var data = {
@@ -32,9 +42,15 @@ function convertToData(expression) {
         return data;
     }
 }
-console.log(convertToData("len"));
 function convertToExpression(expressionStr) {
     expressionStr = expressionStr.trim();
+    if (expressionStr === "\"\"") {
+        var emptyString = {
+            type: "literalString",
+            value: "",
+        };
+        return emptyString;
+    }
     if (expressionStr.indexOf("+") !== -1) {
         console.log(expressionStr.slice(0, expressionStr.indexOf("+")));
         console.log(expressionStr.slice(expressionStr.indexOf("+") + 1));
@@ -71,6 +87,13 @@ function createVariableFromString(varname) {
     };
     return varFromString;
 }
+function createCallback(lineno) {
+    var callbackStatement = {
+        type: "callback",
+        line: lineno,
+    };
+    return callbackStatement;
+}
 var insns = {
     statements: [],
 };
@@ -82,17 +105,17 @@ for (var i = 0; i < arr.length; i++) {
     var currStatement = arr[i];
     currStatement = currStatement.trim();
     if (currStatement.startsWith("PRINT")) {
-        if (currStatement[1][0] !== '"') {
+        if (currStatement.indexOf('"') !== -1) {
             var printStatement = {
                 type: "print",
-                value: currStatement.slice(5),
+                value: currStatement.slice(currStatement.indexOf('"') + 1, currStatement.lastIndexOf('"')),
             };
             insns['statements'].push(printStatement);
         }
         else {
             var printStatement = {
                 type: "print",
-                value: convertToData(currStatement.slice(1)),
+                value: convertToData(currStatement.slice(currStatement.indexOf(' '))),
             };
             insns['statements'].push(printStatement);
         }
@@ -130,7 +153,7 @@ for (var i = 0; i < arr.length; i++) {
         var attributeStatement = {
             type: "attribute",
             key: keyvalue.slice(0, keyvalue.indexOf(' ')),
-            value: keyvalue.slice(keyvalue.indexOf(' ')),
+            value: createCallback(Number(keyvalue.slice(keyvalue.lastIndexOf(' ')))),
         };
         insns['statements'].push(attributeStatement);
     }
@@ -143,7 +166,7 @@ for (var i = 0; i < arr.length; i++) {
     else if (currStatement.startsWith("GOTOIF")) {
         var goToIfLine = {
             type: "gotoIf",
-            cond: convertToExpression(currStatement.slice(4, currStatement.lastIndexOf(' '))),
+            cond: convertToExpression(currStatement.slice(6, currStatement.lastIndexOf(' '))),
             statement: Number(currStatement.slice(currStatement.lastIndexOf(' '))),
         };
         insns['statements'].push(goToIfLine);
@@ -155,10 +178,19 @@ for (var i = 0; i < arr.length; i++) {
         };
         insns['statements'].push(goToLine);
     }
+    else if (currStatement.startsWith("BIND")) {
+        var keyvalue = currStatement.slice(4).trim();
+        var bindStatement = {
+            type: "bind",
+            key: keyvalue.slice(0, keyvalue.indexOf(' ')),
+            lvalue: createVariableFromString(keyvalue.slice(keyvalue.lastIndexOf(' ') + 1)),
+        };
+        insns['statements'].push(bindStatement);
+    }
     else if (currStatement.indexOf('=') !== -1) {
         var assignStatement = {
             type: "assign",
-            lvalue: createVariableFromString(currStatement.slice(0, currStatement.indexOf("=")).trim()),
+            lvalue: convertToData(currStatement.slice(0, currStatement.indexOf("=")).trim()),
             rvalue: convertToExpression(currStatement.slice(currStatement.indexOf('=') + 1)),
         };
         insns['statements'].push(assignStatement);
