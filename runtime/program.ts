@@ -41,6 +41,7 @@ type Expression =
   | LiteralBoolean
   | Add
   | Equals
+  | VariableExpression
   | Callback;
 
 interface Assign {
