@@ -621,16 +621,22 @@ const voter: Program = {
     statements: [
         {
             type: "assign",
-            variable: "left",
-            value: {
+            lvalue: {
+                type: "variable",
+                variable: "left",
+            },
+            rvalue: {
                 type: "literalInteger",
                 value: 0,
             },
         },
         {
             type: "assign",
-            variable: "right",
-            value: {
+            lvalue: {
+                type: "variable",
+                variable: "right",
+            },
+            rvalue: {
                 type: "literalInteger",
                 value: 0,
             },
@@ -641,8 +647,11 @@ const voter: Program = {
         },
         {
             type: "assign",
-            variable: "left",
-            value: {
+            lvalue: {
+                type: "variable",
+                variable: "left",
+            },
+            rvalue: {
                 type: "add",
                 left: {
                     type: "variable",
@@ -660,8 +669,11 @@ const voter: Program = {
         },
         {
             type: "assign",
-            variable: "right",
-            value: {
+            lvalue: {
+                type: "variable",
+                variable: "right",
+            },
+            rvalue: {
                 type: "add",
                 left: {
                     type: "variable",
@@ -749,21 +761,21 @@ const voter: Program = {
                 value: "Winner: ",
             },
         },
-        {
-            type: "gotoIf",
-            cond: {
-                type: "equals",
-                left: {
-                    type: "variable",
-                    variable: "left",
-                },
-                right: {
-                    type: "variable",
-                    variable: "right",
-                },
-            },
-            statement: 9,
-        },
+        // {
+        //     type: "gotoIf",
+        //     cond: {
+        //         type: "equals",
+        //         left: {
+        //             type: "variable",
+        //             variable: "left",
+        //         },
+        //         right: {
+        //             type: "variable",
+        //             variable: "right",
+        //         },
+        //     },
+        //     statement: 9,
+        // },
         {
             type: "close",
         },
@@ -784,7 +796,7 @@ function main() {
         root,
         currentTag: root,
     };
-    execute(buttonClick, ctx);
+    execute(voter, ctx);
 }
 
 main();
