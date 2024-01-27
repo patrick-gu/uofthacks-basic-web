@@ -148,7 +148,7 @@ function evaluate(ctx: Context, expr: Expression): Value {
       const right = evaluate(ctx, expr.right);
       if (left.type !== "number" || right.type !== "number") {
         throw new Error(
-          `Can only compare numbers. Found ${left.type} > ${right.type}.`
+          `Can only compare numbers. Found ${left.type} > ${right.type}.`,
         );
       }
       const value = left.value > right.value;
@@ -1129,7 +1129,7 @@ function main() {
     root,
     currentTag: root,
   };
-  execute(voter, ctx);
+  execute(todos, ctx);
 }
 
-main();
+window.addEventListener("DOMContentLoaded", main);
