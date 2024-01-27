@@ -785,6 +785,13 @@ const voter: Program = {
         value: "Winner: ",
       },
     },
+    {
+      type: "print",
+      value: {
+        type: "literalString",
+        value: "tie",
+      },
+    },
     // {
     //     type: "gotoIf",
     //     cond: {
@@ -1122,7 +1129,7 @@ function main() {
     root,
     currentTag: root,
   };
-  execute(todos, ctx);
+  execute(voter, ctx);
 }
 
 main();
