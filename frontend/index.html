@@ -216,9 +216,9 @@
                     "
                 >
                     <pre style="margin: 0"><code>OPEN h1
-                      PRINT "Hello World!"
-                      CLOSE
-                      END</code></pre>
+PRINT "Hello World!"
+CLOSE
+END</code></pre>
                 </div>
                 <div
                     style="
@@ -229,6 +229,55 @@
                     "
                 >
                     <h1>Hello World!</h1>
+                </div>
+
+                <div style="padding: 1rem 0">
+                    <h2
+                        style="
+                            margin: 0;
+                            display: inline-block;
+                            padding: 1rem;
+                            border: solid 2px black;
+                            box-shadow: 0.5rem 0.5rem crimson;
+                        "
+                    >
+                        Click Me!
+                    </h2>
+                </div>
+
+                <div
+                    style="
+                        border: solid 2px black;
+                        padding: 1rem;
+                        box-shadow: 0.5rem 0.5rem crimson;
+                        margin: 1rem 0;
+                    "
+                >
+                    <pre style="margin: 0"><code>N = 0
+GOTO 3
+N = N + 1
+CLEAR
+OPEN p
+PRINT "The button has been clicked "
+PRINT N
+PRINT " times"
+OPEN button
+ATTRIBUTE onclick GOTO 2
+PRINT "Click Me!"
+CLOSE
+END
+</code></pre>
+                </div>
+                <div
+                    style="
+                        border: solid 2px black;
+                        padding: 1rem;
+                        box-shadow: 0.5rem 0.5rem gold;
+                        margin: 1rem 0;
+                    "
+                >
+                    <p>The button has been clicked n times</p>
+                    <button>Click Me!</button>
                 </div>
             </section>
             <section>
