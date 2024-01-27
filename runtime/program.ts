@@ -70,6 +70,7 @@ interface Close {
 
 interface Attribute {
   type: "attribute";
+  key: string;
   value: Expression;
 }
 
