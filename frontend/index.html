@@ -1,40 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body
-    style="
-      background-color: white;
-      max-width: 75%;
-      margin-left: auto;
-      margin-right: auto;
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-    "
-  >
-    <header
-      style="
-        display: flex;
-        justify-content: center;
-        background-color: dimgray;
-        border: 4px solid black;
-      "
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body
+        style="
+            background-color: white;
+            max-width: 75%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        "
     >
-      <div
-        style="padding: 1rem; background-color: white; display: inline-block"
-      >
-        <h1>BASIC</h1>
-      </div>
-      <div
-        style="padding: 1rem; background-color: black; display: inline-block"
-      >
-        <h1 style="color: white">Web</h1>
-      </div>
-    </header>
-    <!-- <nav>
+        <header
+            style="
+                display: flex;
+                justify-content: center;
+                background-color: crimson;
+                border: 4px solid black;
+            "
+        >
+            <div
+                style="
+                    padding: 1rem;
+                    background-color: gold;
+                    border-left: 4px solid black;
+                    border-right: 4px solid black;
+                    display: inline-block;
+                "
+            >
+                <h1>BASIC</h1>
+            </div>
+            <div
+                style="
+                    padding: 1rem;
+                    background-color: gold;
+                    border-right: 4px solid black;
+                    display: inline-block;
+                "
+            >
+                <h1>Web</h1>
+            </div>
+        </header>
+        <!-- <nav>
       <div class="container">
         <a href="#">About</a>
         <a href="#solution">Solution</a>
@@ -42,186 +53,206 @@
         <a href="#future">Future</a>
       </div>
     </nav> -->
-    <main>
-      <section id="about">
-        <div style="padding: 1rem 0">
-          <h1
-            style="
-              margin: 0;
-              display: inline-block;
-              padding: 1rem;
-              background-color: yellow;
-              box-shadow: 0.5rem 0.5rem black;
-            "
-          >
-            About
-          </h1>
-        </div>
-        <p>
-          Tired of using modern languages and frameworks for your web
-          development projects?
-        </p>
-        <p>
-          Yearning for a fresh perspective that taps into the roots of
-          programming history?
-        </p>
-        <p>
-          Introducing [name] where old-school meets cutting-edge to
-          revolutionize your web development experience. This isn't just a trip
-          down memory lane, it's an opportunity to combine the wisdom of the
-          past with the possibilities of the present to craft the development
-          experience of the future.
-        </p>
-        <p>By the way, ___say that this page is written in BASIC Web___</p>
-      </section>
-      <section id="solution">
-        <div style="padding: 1rem 0">
-          <h1
-            style="
-              margin: 0;
-              display: inline-block;
-              padding: 1rem;
-              background-color: yellow;
-              box-shadow: 0.5rem 0.5rem black;
-            "
-          >
-            Solution
-          </h1>
-        </div>
-        <p>
-          BASIC Web is a programming language inspired by variants of BASIC. It
-          allows you to construct DOM nodes, handle events, and bind data,
-          similar to modern frameworks like React. The set of features in the
-          language is limited; however, with unconditional jumps
-          (<code>GOTO</code>), conditional jumps (<code>GOTOIF</code>), and
-          variables of type string, number, boolean, and array, you can create
-          anything you desire.
-        </p>
-        <p>
-          The programming model is imperative. The code is run once to initially
-          render the page. Upon each event, the program jumps to a certain
-          instruction and begins executing again, and may rerender the entire
-          page.
-        </p>
-        <p>
-          The compiler and runtime library are written in TypeScript. When you
-          compile your code, you get an HTML file with embedded JavaScript. Your
-          program is encoded to an intermediate representation in JSON which the
-          runtime library uses to run your program in the browser.
-        </p>
-      </section>
-      <section id="features">
-        <div style="padding: 1rem 0">
-          <h1
-            style="
-              margin: 0;
-              display: inline-block;
-              padding: 1rem;
-              background-color: yellow;
-              box-shadow: 0.5rem 0.5rem black;
-            "
-          >
-            Features
-          </h1>
-        </div>
-        <ul>
-          <li>
-            Rendering HTML tags with <code>OPEN</code> and <code>CLOSE</code>
-          </li>
-          <li>
-            Unstructured control flow with <code>GOTO</code> and
-            <code>GOTOIF</code>
-          </li>
-          <li>Variable assignment and reassignment</li>
-          <li>Event listeners using <code>GOTO</code></li>
-          <li>
-            Binding attributes such as <code>input value</code> to variables
-            using
-            <code>BIND</code>
-          </li>
-          <li>
-            Adding attributes such as <code>style</code> to tags using
-            <code>ATTRIBUTE</code>
-          </li>
-          <li>Strings and printing text and values with <code>PRINT</code></li>
-          <li>Numbers and basic arithmetic operators like <code>+</code></li>
-          <li>Booleans expressions such as <code>=</code> for equality</li>
-          <li>Arrays (heterogenous, so can contain different types)</li>
-        </ul>
-      </section>
-      <section>
-        <div style="padding: 1rem 0">
-          <h1
-            style="
-              margin: 0;
-              display: inline-block;
-              padding: 1rem;
-              background-color: yellow;
-              box-shadow: 0.5rem 0.5rem black;
-            "
-          >
-            Demos
-          </h1>
-        </div>
-        <div style="padding: 1rem 0">
-          <h2
-            style="
-              margin: 0;
-              display: inline-block;
-              padding: 1rem;
-              background-color: greenyellow;
-              box-shadow: 0.5rem 0.5rem grey;
-            "
-          >
-            Hello World!
-          </h2>
-        </div>
+        <main>
+            <section id="about">
+                <div style="padding: 1rem 0">
+                    <h1
+                        style="
+                            margin: 0;
+                            display: inline-block;
+                            padding: 1rem;
+                            background-color: gold;
+                            border: solid 3px black;
+                            box-shadow: 0.5rem 0.5rem crimson;
+                        "
+                    >
+                        About
+                    </h1>
+                </div>
+                <p>
+                    Tired of using modern languages and frameworks for your web
+                    development projects?
+                </p>
+                <p>
+                    Yearning for a fresh perspective that taps into the roots of
+                    programming history?
+                </p>
+                <p>
+                    Introducing [name] where old-school meets cutting-edge to
+                    revolutionize your web development experience. This isn't
+                    just a trip down memory lane, it's an opportunity to combine
+                    the wisdom of the past with the possibilities of the present
+                    to craft the development experience of the future.
+                </p>
+                <p>
+                    By the way, ___say that this page is written in BASIC Web___
+                </p>
+            </section>
+            <section id="solution">
+                <div style="padding: 1rem 0">
+                    <h1
+                        style="
+                            margin: 0;
+                            display: inline-block;
+                            padding: 1rem;
+                            background-color: gold;
+                            border: solid 3px black;
+                            box-shadow: 0.5rem 0.5rem crimson;
+                        "
+                    >
+                        Solution
+                    </h1>
+                </div>
+                <p>
+                    BASIC Web is a programming language inspired by variants of
+                    BASIC. It allows you to construct DOM nodes, handle events,
+                    and bind data, similar to modern frameworks like React. The
+                    set of features in the language is limited; however, with
+                    unconditional jumps (<code>GOTO</code>), conditional jumps
+                    (<code>GOTOIF</code>), and variables of type string, number,
+                    boolean, and array, you can create anything you desire.
+                </p>
+                <p>
+                    The programming model is imperative. The code is run once to
+                    initially render the page. Upon each event, the program
+                    jumps to a certain instruction and begins executing again,
+                    and may rerender the entire page.
+                </p>
+                <p>
+                    The compiler and runtime library are written in TypeScript.
+                    When you compile your code, you get an HTML file with
+                    embedded JavaScript. Your program is encoded to an
+                    intermediate representation in JSON which the runtime
+                    library uses to run your program in the browser.
+                </p>
+            </section>
+            <section id="features">
+                <div style="padding: 1rem 0">
+                    <h1
+                        style="
+                            margin: 0;
+                            display: inline-block;
+                            padding: 1rem;
+                            background-color: gold;
+                            border: solid 3px black;
+                            box-shadow: 0.5rem 0.5rem crimson;
+                        "
+                    >
+                        Features
+                    </h1>
+                </div>
+                <ul>
+                    <li>
+                        Rendering HTML tags with <code>OPEN</code> and
+                        <code>CLOSE</code>
+                    </li>
+                    <li>
+                        Unstructured control flow with <code>GOTO</code> and
+                        <code>GOTOIF</code>
+                    </li>
+                    <li>Variable assignment and reassignment</li>
+                    <li>Event listeners using <code>GOTO</code></li>
+                    <li>
+                        Binding attributes such as <code>input value</code> to
+                        variables using
+                        <code>BIND</code>
+                    </li>
+                    <li>
+                        Adding attributes such as <code>style</code> to tags
+                        using
+                        <code>ATTRIBUTE</code>
+                    </li>
+                    <li>
+                        Strings and printing text and values with
+                        <code>PRINT</code>
+                    </li>
+                    <li>
+                        Numbers and basic arithmetic operators like
+                        <code>+</code>
+                    </li>
+                    <li>
+                        Booleans expressions such as <code>=</code> for equality
+                    </li>
+                    <li>
+                        Arrays (heterogenous, so can contain different types)
+                    </li>
+                </ul>
+            </section>
+            <section>
+                <div style="padding: 1rem 0">
+                    <h1
+                        style="
+                            margin: 0;
+                            display: inline-block;
+                            padding: 1rem;
+                            background-color: gold;
+                            border: solid 3px black;
+                            box-shadow: 0.5rem 0.5rem crimson;
+                        "
+                    >
+                        Demos
+                    </h1>
+                </div>
+                <div style="padding: 1rem 0">
+                    <h2
+                        style="
+                            margin: 0;
+                            display: inline-block;
+                            padding: 1rem;
+                            border: solid 2px black;
+                            box-shadow: 0.5rem 0.5rem crimson;
+                        "
+                    >
+                        Hello World!
+                    </h2>
+                </div>
 
-        <div
-          style="
-            border: solid 1px red;
-            padding: 1rem;
-            box-shadow: 0.5rem 0.5rem tomato;
-            margin: 1rem 0;
-          "
-        >
-          <pre style="margin: 0"><code>OPEN h1
-PRINT "Hello World!"
-CLOSE
-END</code></pre>
-        </div>
-        <div
-          style="
-            border: solid 1px blue;
-            padding: 1rem;
-            box-shadow: 0.5rem 0.5rem cornflowerblue;
-            margin: 1rem 0;
-          "
-        >
-          <h1>Hello World!</h1>
-        </div>
-      </section>
-      <section>
-        <div style="padding: 1rem 0">
-          <h1
-            style="
-              margin: 0;
-              display: inline-block;
-              padding: 1rem;
-              background-color: yellow;
-              box-shadow: 0.5rem 0.5rem black;
-            "
-          >
-            Technical Details
-          </h1>
-        </div>
-        <p>TODO</p>
-      </section>
-      <!-- <section id="future">
+                <div
+                    style="
+                        border: solid 2px black;
+                        padding: 1rem;
+                        box-shadow: 0.5rem 0.5rem crimson;
+                        margin: 1rem 0;
+                    "
+                >
+                    <pre style="margin: 0"><code>OPEN h1
+                      PRINT "Hello World!"
+                      CLOSE
+                      END</code></pre>
+                </div>
+                <div
+                    style="
+                        border: solid 2px black;
+                        padding: 1rem;
+                        box-shadow: 0.5rem 0.5rem gold;
+                        margin: 1rem 0;
+                    "
+                >
+                    <h1>Hello World!</h1>
+                </div>
+            </section>
+            <section>
+                <div style="padding: 1rem 0">
+                    <h1
+                        style="
+                            margin: 0;
+                            display: inline-block;
+                            padding: 1rem;
+                            background-color: gold;
+                            border: solid 3px black;
+                            box-shadow: 0.5rem 0.5rem crimson;
+                        "
+                    >
+                        Technical Details
+                    </h1>
+                </div>
+                <p>TODO</p>
+            </section>
+            <!-- <section id="future">
         <h1>Future</h1>
         <p>Images</p>
         <p>Routing</p>
       </section> -->
-    </main>
-  </body>
+        </main>
+    </body>
 </html>
