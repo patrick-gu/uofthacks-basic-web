@@ -1,14 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = require("fs");
-function mergeIntoOneString(expression) {
-    var resultString = expression[0];
-    for (var i = 1; i < expression.length; i++) {
-        resultString = resultString.concat(" ");
-        resultString = resultString.concat(expression[i]);
-    }
-    return resultString;
-}
 function convertToData(expression) {
     var expressionStr = expression.trim();
     if (expressionStr === "true" || expressionStr === "false") {
@@ -166,10 +158,10 @@ for (var i = 0; i < arr.length; i++) {
     else if (currStatement.indexOf('=') !== -1) {
         var assignStatement = {
             type: "assign",
-            lvalue: currStatement.slice(0, currStatement.indexOf("=")).trim(),
+            lvalue: createVariableFromString(currStatement.slice(0, currStatement.indexOf("=")).trim()),
             rvalue: convertToExpression(currStatement.slice(currStatement.indexOf('=') + 1)),
         };
         insns['statements'].push(assignStatement);
     }
 }
-console.log(insns.statements);
+console.log(JSON.stringify(insns.statements, undefined, 2));

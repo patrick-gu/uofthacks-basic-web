@@ -48,7 +48,7 @@ interface LiteralString {
 
   interface Assign {
     type: "assign";
-    lvalue: string;
+    lvalue: Variable;
     rvalue: Expression;
   }
   
@@ -269,7 +269,7 @@ for(let i = 0; i < arr.length; i++) {
     {
         let goToIfLine: Gotoif = {
             type: "gotoIf",
-            cond: convertToExpression(currStatement.slice(4, currStatement.lastIndexOf(' '))),
+            cond: convertToExpression(currStatement.slice(6, currStatement.lastIndexOf(' '))),
             statement: Number(currStatement.slice(currStatement.lastIndexOf(' '))),
         }
         insns['statements'].push(goToIfLine);
@@ -287,10 +287,10 @@ for(let i = 0; i < arr.length; i++) {
     {
         let assignStatement: Assign = {
             type: "assign",
-            lvalue: currStatement.slice(0, currStatement.indexOf("=")).trim(),
+            lvalue: createVariableFromString(currStatement.slice(0, currStatement.indexOf("=")).trim()),
             rvalue: convertToExpression(currStatement.slice(currStatement.indexOf('=') + 1)),
         };
         insns['statements'].push(assignStatement);
     }
 }
-console.log(insns.statements);
+console.log(JSON.stringify(insns.statements, undefined, 2));
