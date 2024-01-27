@@ -1,521 +1,683 @@
 function execute(prog: Program, ctx: Context) {
-  while (ctx.ip < prog.statements.length) {
-    const stmt = prog.statements[ctx.ip];
-    let newIp = ctx.ip + 1;
-    switch (stmt.type) {
-      case "assign": {
-        const value = evaluate(ctx, stmt.value);
-        ctx.variables.set(stmt.variable, value);
-        break;
-      }
-      case "attribute": {
-        const tag = ctx.currentTag;
-        if (tag.type === "root") {
-          throw new Error("Can only add attributes when inside a tag.");
+    while (ctx.ip < prog.statements.length) {
+        const stmt = prog.statements[ctx.ip];
+        let newIp = ctx.ip + 1;
+        switch (stmt.type) {
+            case "assign": {
+                const value = evaluate(ctx, stmt.value);
+                ctx.variables.set(stmt.variable, value);
+                break;
+            }
+            case "attribute": {
+                const tag = ctx.currentTag;
+                if (tag.type === "root") {
+                    throw new Error(
+                        "Can only add attributes when inside a tag."
+                    );
+                }
+                tag.attributes.set(stmt.key, evaluate(ctx, stmt.value));
+                break;
+            }
+            case "open": {
+                const tag: Tag = {
+                    type: "tag",
+                    tag: stmt.tag,
+                    parent: ctx.currentTag,
+                    attributes: new Map(),
+                    content: [],
+                };
+                ctx.currentTag.content.push(tag);
+                ctx.currentTag = tag;
+                break;
+            }
+            case "close": {
+                if (ctx.currentTag.type === "root") {
+                    throw new Error("No tag to close.");
+                }
+                ctx.currentTag = ctx.currentTag.parent;
+                break;
+            }
+            case "end": {
+                render(prog, ctx, ctx.root);
+            }
+            case "clear": {
+                ctx.root = {
+                    type: "root",
+                    content: [],
+                };
+                ctx.currentTag = ctx.root;
+                break;
+            }
+            case "goto": {
+                newIp = stmt.statement;
+                break;
+            }
+            case "print": {
+                const value = evaluate(ctx, stmt.value);
+                const text = toString(value);
+                ctx.currentTag.content.push({
+                    type: "text",
+                    value: text,
+                });
+                break;
+            }
+            case "gotoIf": {
+                const cond = evaluate(ctx, stmt.cond);
+                if (cond.type === "boolean") {
+                    if (cond.value) {
+                        newIp = stmt.statement;
+                    }
+                } else {
+                    throw new Error(
+                        `Cannot write condition of type ${stmt.type}.`
+                    );
+                }
+                break;
+            }
+            default: {
+                const _exhaustive: never = stmt;
+            }
         }
-        tag.attributes.set(stmt.key, evaluate(ctx, stmt.value));
-        break;
-      }
-      case "open": {
-        const tag: Tag = {
-          type: "tag",
-          tag: stmt.tag,
-          parent: ctx.currentTag,
-          attributes: new Map(),
-          content: [],
-        };
-        ctx.currentTag.content.push(tag);
-        ctx.currentTag = tag;
-        break;
-      }
-      case "close": {
-        if (ctx.currentTag.type === "root") {
-          throw new Error("No tag to close.");
-        }
-        ctx.currentTag = ctx.currentTag.parent;
-        break;
-      }
-      case "end": {
-        render(prog, ctx, ctx.root);
-      }
-      case "clear": {
-        ctx.root = {
-          type: "root",
-          content: [],
-        };
-        ctx.currentTag = ctx.root;
-        break;
-      }
-      case "goto": {
-        newIp = stmt.statement;
-        break;
-      }
-      case "print": {
-        const value = evaluate(ctx, stmt.value);
-        const text = toString(value);
-        ctx.currentTag.content.push({
-          type: "text",
-          value: text,
-        });
-        break;
-      }
-      case "gotoIf": {
-        const cond = evaluate(ctx, stmt.cond);
-        if (cond.type === "boolean") {
-          if (cond.value) {
-            newIp = stmt.statement;
-          }
-        } else {
-          throw new Error(`Cannot write condition of type ${stmt.type}.`);
-        }
-        break;
-      }
-      default: {
-        const _exhaustive: never = stmt;
-      }
+        ctx.ip = newIp;
     }
-    ctx.ip = newIp;
-  }
 }
 
 function evaluate(ctx: Context, expr: Expression): Value {
-  switch (expr.type) {
-    case "add": {
-      const left = evaluate(ctx, expr.left);
-      const right = evaluate(ctx, expr.right);
-      if (left.type === "number" && right.type === "number") {
-        return {
-          type: "number",
-          value: left.value + right.value,
-        };
-      }
-      throw new Error(
-        `Cannot add variables of type ${left.type} and ${right.type}`
-      );
-    }
-    case "callback": {
-      return {
-        type: "callback",
-        line: expr.line,
-      };
-    }
-    case "equals": {
-      const left = evaluate(ctx, expr.left);
-      const right = evaluate(ctx, expr.right);
-      if (left.type !== right.type) {
-        return {
-          type: "boolean",
-          value: false,
-        };
-      }
-      let value: boolean;
-      switch (left.type) {
-        case "boolean":
-        case "string":
-        case "number": {
-          value =
-            left.value ===
-            (right as { value: boolean | string | number }).value;
-          break;
+    switch (expr.type) {
+        case "add": {
+            const left = evaluate(ctx, expr.left);
+            const right = evaluate(ctx, expr.right);
+            if (left.type === "number" && right.type === "number") {
+                return {
+                    type: "number",
+                    value: left.value + right.value,
+                };
+            }
+            throw new Error(
+                `Cannot add variables of type ${left.type} and ${right.type}`
+            );
         }
         case "callback": {
-          value = left.line === (right as { line: number }).line;
+            return {
+                type: "callback",
+                line: expr.line,
+            };
         }
-      }
-      return {
-        type: "boolean",
-        value,
-      };
-    }
-    case "literalBoolean": {
-      return {
-        type: "boolean",
-        value: expr.value,
-      };
-    }
-    case "literalInteger": {
-      return {
-        type: "number",
-        value: expr.value,
-      };
-    }
-    case "literalString": {
-      return {
-        type: "string",
-        value: expr.value,
-      };
-    }
-    case "variable": {
-      const value = ctx.variables.get(expr.variable);
-      if (value === undefined) {
-        throw new Error(`Undefined variable ${expr.variable}`);
-      }
-      return value;
-    }
-    case "modulo": {
-      const left = evaluate(ctx, expr.left);
-      const right = evaluate(ctx, expr.right);
-      if (left.type === "number" && right.type === "number") {
-        if (right.value === 0) {
-          throw new Error("Modulo by zero");
+        case "equals": {
+            const left = evaluate(ctx, expr.left);
+            const right = evaluate(ctx, expr.right);
+            if (left.type !== right.type) {
+                return {
+                    type: "boolean",
+                    value: false,
+                };
+            }
+            let value: boolean;
+            switch (left.type) {
+                case "boolean":
+                case "string":
+                case "number": {
+                    value =
+                        left.value ===
+                        (right as { value: boolean | string | number }).value;
+                    break;
+                }
+                case "callback": {
+                    value = left.line === (right as { line: number }).line;
+                }
+            }
+            return {
+                type: "boolean",
+                value,
+            };
         }
-        return {
-          type: "number",
-          value: left.value % right.value,
-        };
-      }
-      throw new Error(
-        `Cannot modulo variables of type ${left.type} and ${right.type}`
-      );
+        case "literalBoolean": {
+            return {
+                type: "boolean",
+                value: expr.value,
+            };
+        }
+        case "literalInteger": {
+            return {
+                type: "number",
+                value: expr.value,
+            };
+        }
+        case "literalString": {
+            return {
+                type: "string",
+                value: expr.value,
+            };
+        }
+        case "variable": {
+            const value = ctx.variables.get(expr.variable);
+            if (value === undefined) {
+                throw new Error(`Undefined variable ${expr.variable}`);
+            }
+            return value;
+        }
+        case "modulo": {
+            const left = evaluate(ctx, expr.left);
+            const right = evaluate(ctx, expr.right);
+            if (left.type === "number" && right.type === "number") {
+                if (right.value === 0) {
+                    throw new Error("Modulo by zero");
+                }
+                return {
+                    type: "number",
+                    value: left.value % right.value,
+                };
+            }
+            throw new Error(
+                `Cannot modulo variables of type ${left.type} and ${right.type}`
+            );
+        }
     }
-  }
 }
 
 function toString(value: Value): string {
-  switch (value.type) {
-    case "callback":
-      return "GOTO" + value.line;
-    case "number":
-      return value.value.toString();
-    case "string":
-      return value.value;
-    case "boolean": {
-      if (value.value) {
-        return "TRUE";
-      } else {
-        return "FALSE";
-      }
+    switch (value.type) {
+        case "callback":
+            return "GOTO" + value.line;
+        case "number":
+            return value.value.toString();
+        case "string":
+            return value.value;
+        case "boolean": {
+            if (value.value) {
+                return "TRUE";
+            } else {
+                return "FALSE";
+            }
+        }
     }
-  }
 }
 
 function render(prog: Program, ctx: Context, root: Root) {
-  const body = getBody();
-  body.replaceChildren(...root.content.map((n) => renderNode(prog, ctx, n)));
+    const body = getBody();
+    body.replaceChildren(...root.content.map((n) => renderNode(prog, ctx, n)));
 }
 
 function renderNode(
-  prog: Program,
-  ctx: Context,
-  node: Tag | RuntimeText
+    prog: Program,
+    ctx: Context,
+    node: Tag | RuntimeText
 ): Node | string {
-  if (node.type === "tag") {
-    const res = document.createElement(node.tag);
-    for (const [key, value] of node.attributes.entries()) {
-      switch (value.type) {
-        case "string":
-          res.setAttribute(key, value.value);
-          break;
-        case "number":
-        case "boolean":
-          res.setAttribute(key, value.value.toString());
-          break;
-        case "callback":
-          (res as any)[key] = () => {
-            ctx.ip = value.line;
-            execute(prog, ctx);
-          };
-      }
+    if (node.type === "tag") {
+        const res = document.createElement(node.tag);
+        for (const [key, value] of node.attributes.entries()) {
+            switch (value.type) {
+                case "string":
+                    res.setAttribute(key, value.value);
+                    break;
+                case "number":
+                case "boolean":
+                    res.setAttribute(key, value.value.toString());
+                    break;
+                case "callback":
+                    (res as any)[key] = () => {
+                        ctx.ip = value.line;
+                        execute(prog, ctx);
+                    };
+            }
+        }
+        res.replaceChildren(
+            ...node.content.map((n) => renderNode(prog, ctx, n))
+        );
+        return res;
+    } else {
+        return node.value;
     }
-    res.replaceChildren(...node.content.map((n) => renderNode(prog, ctx, n)));
-    return res;
-  } else {
-    return node.value;
-  }
 }
 
 function getBody(): HTMLBodyElement {
-  const body = document.getElementsByTagName("body")[0];
-  return body;
+    const body = document.getElementsByTagName("body")[0];
+    return body;
 }
 
 const buttonClick: Program = {
-  statements: [
-    {
-      type: "assign",
-      variable: "N",
-      value: {
-        type: "literalInteger",
-        value: 0,
-      },
-    },
-    {
-      type: "goto",
-      statement: 3,
-    },
-    {
-      type: "assign",
-      variable: "N",
-      value: {
-        type: "add",
-        left: {
-          type: "variable",
-          variable: "N",
+    statements: [
+        {
+            type: "assign",
+            variable: "N",
+            value: {
+                type: "literalInteger",
+                value: 0,
+            },
         },
-        right: {
-          type: "literalInteger",
-          value: 1,
+        {
+            type: "goto",
+            statement: 3,
         },
-      },
-    },
-    {
-      type: "clear",
-    },
-    {
-      type: "open",
-      tag: "p",
-    },
-    {
-      type: "print",
-      value: {
-        type: "literalString",
-        value: "The button has been clicked ",
-      },
-    },
-    {
-      type: "print",
-      value: {
-        type: "variable",
-        variable: "N",
-      },
-    },
-    {
-      type: "print",
-      value: {
-        type: "literalString",
-        value: " times!\n",
-      },
-    },
-    {
-      type: "close",
-    },
-    {
-      type: "open",
-      tag: "button",
-    },
-    {
-      type: "attribute",
-      key: "onclick",
-      value: {
-        type: "callback",
-        line: 2,
-      },
-    },
-    {
-      type: "print",
-      value: {
-        type: "literalString",
-        value: "Click me!",
-      },
-    },
-    {
-      type: "close",
-    },
-    {
-      type: "end",
-    },
-  ],
+        {
+            type: "assign",
+            variable: "N",
+            value: {
+                type: "add",
+                left: {
+                    type: "variable",
+                    variable: "N",
+                },
+                right: {
+                    type: "literalInteger",
+                    value: 1,
+                },
+            },
+        },
+        {
+            type: "clear",
+        },
+        {
+            type: "open",
+            tag: "p",
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: "The button has been clicked ",
+            },
+        },
+        {
+            type: "print",
+            value: {
+                type: "variable",
+                variable: "N",
+            },
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: " times!\n",
+            },
+        },
+        {
+            type: "close",
+        },
+        {
+            type: "open",
+            tag: "button",
+        },
+        {
+            type: "attribute",
+            key: "onclick",
+            value: {
+                type: "callback",
+                line: 2,
+            },
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: "Click me!",
+            },
+        },
+        {
+            type: "close",
+        },
+        {
+            type: "end",
+        },
+    ],
 };
 
 const fizzBuzz: Program = {
-  statements: [
-    {
-      type: "assign",
-      variable: "N",
-      value: {
-        type: "literalInteger",
-        value: 1,
-      },
-    },
-    {
-      type: "gotoIf",
-      cond: {
-        type: "equals",
-        left: {
-          type: "variable",
-          variable: "N",
-        },
-        right: {
-          type: "literalInteger",
-          value: 100,
-        },
-      },
-      statement: 19,
-    },
-    {
-      type: "open",
-      tag: "p",
-    },
-    {
-      type: "gotoIf",
-      cond: {
-        type: "equals",
-        left: {
-          type: "modulo",
-          left: {
-            type: "variable",
+    statements: [
+        {
+            type: "assign",
             variable: "N",
-          },
-          right: {
-            type: "literalInteger",
-            value: 15,
-          },
+            value: {
+                type: "literalInteger",
+                value: 1,
+            },
         },
-        right: {
-          type: "literalInteger",
-          value: 0,
+        {
+            type: "gotoIf",
+            cond: {
+                type: "equals",
+                left: {
+                    type: "variable",
+                    variable: "N",
+                },
+                right: {
+                    type: "literalInteger",
+                    value: 100,
+                },
+            },
+            statement: 19,
         },
-      },
-      statement: 8,
-    },
-    {
-      type: "gotoIf",
-      cond: {
-        type: "equals",
-        left: {
-          type: "modulo",
-          left: {
-            type: "variable",
+        {
+            type: "open",
+            tag: "p",
+        },
+        {
+            type: "gotoIf",
+            cond: {
+                type: "equals",
+                left: {
+                    type: "modulo",
+                    left: {
+                        type: "variable",
+                        variable: "N",
+                    },
+                    right: {
+                        type: "literalInteger",
+                        value: 15,
+                    },
+                },
+                right: {
+                    type: "literalInteger",
+                    value: 0,
+                },
+            },
+            statement: 8,
+        },
+        {
+            type: "gotoIf",
+            cond: {
+                type: "equals",
+                left: {
+                    type: "modulo",
+                    left: {
+                        type: "variable",
+                        variable: "N",
+                    },
+                    right: {
+                        type: "literalInteger",
+                        value: 3,
+                    },
+                },
+                right: {
+                    type: "literalInteger",
+                    value: 0,
+                },
+            },
+            statement: 11,
+        },
+        {
+            type: "gotoIf",
+            cond: {
+                type: "equals",
+                left: {
+                    type: "modulo",
+                    left: {
+                        type: "variable",
+                        variable: "N",
+                    },
+                    right: {
+                        type: "literalInteger",
+                        value: 5,
+                    },
+                },
+                right: {
+                    type: "literalInteger",
+                    value: 0,
+                },
+            },
+            statement: 14,
+        },
+        {
+            type: "print",
+            value: {
+                type: "variable",
+                variable: "N",
+            },
+        },
+        {
+            type: "goto",
+            statement: 16,
+        },
+        {
+            type: "attribute",
+            key: "style",
+            value: {
+                type: "literalString",
+                value: "color: purple",
+            },
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: "fizzbuzz",
+            },
+        },
+        {
+            type: "goto",
+            statement: 16,
+        },
+        {
+            type: "attribute",
+            key: "style",
+            value: {
+                type: "literalString",
+                value: "color: red",
+            },
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: "fizz",
+            },
+        },
+        {
+            type: "goto",
+            statement: 16,
+        },
+        {
+            type: "attribute",
+            key: "style",
+            value: {
+                type: "literalString",
+                value: "color: blue",
+            },
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: "buzz",
+            },
+        },
+        {
+            type: "close",
+        },
+        {
+            type: "assign",
             variable: "N",
-          },
-          right: {
-            type: "literalInteger",
-            value: 3,
-          },
+            value: {
+                type: "add",
+                left: {
+                    type: "variable",
+                    variable: "N",
+                },
+                right: {
+                    type: "literalInteger",
+                    value: 1,
+                },
+            },
         },
-        right: {
-          type: "literalInteger",
-          value: 0,
+        {
+            type: "goto",
+            statement: 1,
         },
-      },
-      statement: 11,
-    },
-    {
-      type: "gotoIf",
-      cond: {
-        type: "equals",
-        left: {
-          type: "modulo",
-          left: {
-            type: "variable",
-            variable: "N",
-          },
-          right: {
-            type: "literalInteger",
-            value: 5,
-          },
+        {
+            type: "end",
         },
-        right: {
-          type: "literalInteger",
-          value: 0,
+    ],
+};
+
+const voter: Program = {
+    statements: [
+        {
+            type: "assign",
+            variable: "left",
+            value: {
+                type: "literalInteger",
+                value: 0,
+            },
         },
-      },
-      statement: 14,
-    },
-    {
-      type: "print",
-      value: {
-        type: "variable",
-        variable: "N",
-      },
-    },
-    {
-      type: "goto",
-      statement: 16,
-    },
-    {
-      type: "attribute",
-      key: "style",
-      value: {
-        type: "literalString",
-        value: "color: purple",
-      },
-    },
-    {
-      type: "print",
-      value: {
-        type: "literalString",
-        value: "fizzbuzz",
-      },
-    },
-    {
-      type: "goto",
-      statement: 16,
-    },
-    {
-      type: "attribute",
-      key: "style",
-      value: {
-        type: "literalString",
-        value: "color: red",
-      },
-    },
-    {
-      type: "print",
-      value: {
-        type: "literalString",
-        value: "fizz",
-      },
-    },
-    {
-      type: "goto",
-      statement: 16,
-    },
-    {
-      type: "attribute",
-      key: "style",
-      value: {
-        type: "literalString",
-        value: "color: blue",
-      },
-    },
-    {
-      type: "print",
-      value: {
-        type: "literalString",
-        value: "buzz",
-      },
-    },
-    {
-      type: "close",
-    },
-    {
-      type: "assign",
-      variable: "N",
-      value: {
-        type: "add",
-        left: {
-          type: "variable",
-          variable: "N",
+        {
+            type: "assign",
+            variable: "right",
+            value: {
+                type: "literalInteger",
+                value: 0,
+            },
         },
-        right: {
-          type: "literalInteger",
-          value: 1,
+        {
+            type: "goto",
+            statement: 6,
         },
-      },
-    },
-    {
-      type: "goto",
-      statement: 1,
-    },
-    {
-      type: "end",
-    },
-  ],
+        {
+            type: "assign",
+            variable: "left",
+            value: {
+                type: "add",
+                left: {
+                    type: "variable",
+                    variable: "left",
+                },
+                right: {
+                    type: "literalInteger",
+                    value: 1,
+                },
+            },
+        },
+        {
+            type: "goto",
+            statement: 6,
+        },
+        {
+            type: "assign",
+            variable: "right",
+            value: {
+                type: "add",
+                left: {
+                    type: "variable",
+                    variable: "right",
+                },
+                right: {
+                    type: "literalInteger",
+                    value: 1,
+                },
+            },
+        },
+        {
+            type: "open",
+            tag: "p",
+        },
+        {
+            type: "print",
+            value: {
+                type: "variable",
+                variable: "left",
+            },
+        },
+        {
+            type: "open",
+            tag: "button",
+        },
+        {
+            type: "attribute",
+            key: "onclick",
+            value: {
+                type: "callback",
+                line: 3,
+            },
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: "Vote left",
+            },
+        },
+        {
+            type: "close",
+        },
+        {
+            type: "open",
+            tag: "button",
+        },
+        {
+            type: "attribute",
+            key: "onclick",
+            value: {
+                type: "callback",
+                line: 5,
+            },
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: "Vote right",
+            },
+        },
+        {
+            type: "close",
+        },
+        {
+            type: "print",
+            value: {
+                type: "variable",
+                variable: "right",
+            },
+        },
+        {
+            type: "close",
+        },
+        {
+            type: "open",
+            tag: "p",
+        },
+        {
+            type: "print",
+            value: {
+                type: "literalString",
+                value: "Winner: ",
+            },
+        },
+        {
+            type: "gotoIf",
+            cond: {
+                type: "equals",
+                left: {
+                    type: "variable",
+                    variable: "left",
+                },
+                right: {
+                    type: "variable",
+                    variable: "right",
+                },
+            },
+            statement: 9,
+        },
+        {
+            type: "close",
+        },
+        {
+            type: "end",
+        },
+    ],
 };
 
 function main() {
-  const root: Root = {
-    type: "root",
-    content: [],
-  };
-  const ctx: Context = {
-    variables: new Map(),
-    ip: 0,
-    root,
-    currentTag: root,
-  };
-  execute(fizzBuzz, ctx);
+    const root: Root = {
+        type: "root",
+        content: [],
+    };
+    const ctx: Context = {
+        variables: new Map(),
+        ip: 0,
+        root,
+        currentTag: root,
+    };
+    execute(voter, ctx);
 }
 
 main();

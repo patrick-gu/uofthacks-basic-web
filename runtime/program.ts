@@ -1,112 +1,112 @@
 interface LiteralString {
-  type: "literalString";
-  value: string;
+    type: "literalString";
+    value: string;
 }
 
 interface LiteralInteger {
-  type: "literalInteger";
-  value: number;
+    type: "literalInteger";
+    value: number;
 }
 
 interface LiteralBoolean {
-  type: "literalBoolean";
-  value: boolean;
+    type: "literalBoolean";
+    value: boolean;
 }
 
 interface Add {
-  type: "add";
-  left: Expression;
-  right: Expression;
+    type: "add";
+    left: Expression;
+    right: Expression;
 }
 
 interface Modulo {
-  type: "modulo";
-  left: Expression;
-  right: Expression;
+    type: "modulo";
+    left: Expression;
+    right: Expression;
 }
 
 interface Equals {
-  type: "equals";
-  left: Expression;
-  right: Expression;
+    type: "equals";
+    left: Expression;
+    right: Expression;
 }
 
 interface VariableExpression {
-  type: "variable";
-  variable: string;
+    type: "variable";
+    variable: string;
 }
 
 interface Callback {
-  type: "callback";
-  line: number;
+    type: "callback";
+    line: number;
 }
 
 type Expression =
-  | LiteralString
-  | LiteralInteger
-  | LiteralBoolean
-  | Add
-  | Modulo
-  | Equals
-  | VariableExpression
-  | Callback;
+    | LiteralString
+    | LiteralInteger
+    | LiteralBoolean
+    | Add
+    | Modulo
+    | Equals
+    | VariableExpression
+    | Callback;
 
 interface Assign {
-  type: "assign";
-  variable: string;
-  value: Expression;
+    type: "assign";
+    variable: string;
+    value: Expression;
 }
 
 interface Print {
-  type: "print";
-  value: Expression;
+    type: "print";
+    value: Expression;
 }
 
 interface Clear {
-  type: "clear";
+    type: "clear";
 }
 
 interface Open {
-  type: "open";
-  tag: string;
+    type: "open";
+    tag: string;
 }
 
 interface Close {
-  type: "close";
+    type: "close";
 }
 
 interface Attribute {
-  type: "attribute";
-  key: string;
-  value: Expression;
+    type: "attribute";
+    key: string;
+    value: Expression;
 }
 
 interface End {
-  type: "end";
+    type: "end";
 }
 
 interface Goto {
-  type: "goto";
-  statement: number;
+    type: "goto";
+    statement: number;
 }
 
 interface GotoIf {
-  type: "gotoIf";
-  cond: Expression;
-  statement: number;
+    type: "gotoIf";
+    cond: Expression;
+    statement: number;
 }
 
 type Statement =
-  | Assign
-  | Print
-  | Clear
-  | Open
-  | Close
-  | Attribute
-  | End
-  | Goto
-  | GotoIf;
+    | Assign
+    | Print
+    | Clear
+    | Open
+    | Close
+    | Attribute
+    | End
+    | Goto
+    | GotoIf;
 
 interface Program {
-  statements: Statement[];
+    statements: Statement[];
 }
