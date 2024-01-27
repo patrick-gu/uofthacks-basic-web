@@ -21,6 +21,7 @@ interface Tag {
   type: "tag";
   tag: string;
   attributes: Map<string, Value>;
+  bindings: Map<string, (value: Value) => void>;
   content: (Tag | RuntimeText)[];
   parent: Tag | Root;
 }
