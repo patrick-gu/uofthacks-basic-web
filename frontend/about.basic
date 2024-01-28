@@ -1,0 +1,19 @@
+OPEN div
+ATTRIBUTE style "background-color: white; max-width: 75%; margin-left: auto; margin-right: auto; margin-top: 2rem; margin-bottom: 2rem;"
+  OPEN header
+  ATTRIBUTE style "display: flex; justify-content: center; background-color: crimson; border: 4px solid black;"
+    OPEN div
+    ATTRIBUTE style "padding: 1rem; background-color: gold; border-left: 4px solid black; border-right: 4px solid black; display: inline-block;"
+      OPEN h1
+        PRINT "BASIC"
+      CLOSE
+    CLOSE
+    OPEN div
+    ATTRIBUTE style "padding: 1rem; background-color: gold; border-right: 4px solid black; display: inline-block;"
+      OPEN h1
+        PRINT "Web"
+      CLOSE
+    CLOSE
+  CLOSE
+CLOSE
+END
