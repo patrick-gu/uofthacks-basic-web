@@ -5,10 +5,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode=development",
-    "run1": "cd compiler && npm run compile -- ../frontend/about.basic",
+    "run1": "cd compiler && npm run compile",
     "run2": "cd runtime && npm run build",
-    "run3": "npm run run1 && npm run run2",
-    "dev": "nodemon --watch frontend/about.basic --exec \"npm run run3\""
+    "run3": "npm run run1 -- ../frontend/about.basic && npm run run2",
+    "dev": "nodemon --watch frontend/about.basic --exec \"npm run run3\"",
+    "run4": "npm run run1 -- ../examples/demo.basic && npm run run2",
+    "dev-demo": "nodemon --watch ./examples/demo.basic --exec \"npm run run4\""
   },
   "author": "",
   "license": "",

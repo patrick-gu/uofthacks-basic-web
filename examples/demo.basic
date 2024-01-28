@@ -1,0 +1,14 @@
+OPEN h1
+    PRINT "This is a demo app!"
+CLOSE
+
+i = 1
+10 IF i = 11 THEN 20
+    OPEN p
+    PRINT "Line #"
+    PRINT i
+    CLOSE
+
+    i = i + 1
+    GOTO 10
+20 END
