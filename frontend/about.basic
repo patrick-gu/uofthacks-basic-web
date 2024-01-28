@@ -1,3 +1,49 @@
+nbutton = 0
+
+left = 0
+right = 0
+result = "Tie"
+
+len = 0
+DIM todos(0)
+next = ""
+
+GOTO 100
+
+10 nbutton = nbutton + 1
+GOTO 100
+
+53 left = left + 1
+goto 63
+55 right = right + 1
+goto 63
+
+57 result = "Tie"
+goto 66
+59 result = "Left"
+goto 66
+61 result = "Right"
+goto 66
+
+63 if left = right then 57
+if left > right then 59
+if right > left then 61
+
+66 goto 100
+
+80 DIM cpy(len + 1)
+85 i = 0
+86 IF i = len THEN 90
+87 cpy(i) = todos(i)
+88 i = i + 1
+89 GOTO 86
+90 todos = cpy
+91 todos(len) = next
+92 len = len + 1
+
+
+100 CLEAR
+
 OPEN div
 ATTRIBUTE style "background-color: white; max-width: 75%; margin-left: auto; margin-right: auto; margin-top: 2rem; margin-bottom: 2rem;"
   OPEN header
@@ -66,6 +112,240 @@ ATTRIBUTE style "background-color: white; max-width: 75%; margin-left: auto; mar
       OPEN p
         PRINT "The compiler and runtime library are written in TypeScript. When you compile your code, you get an HTML file with embedded JavaScript. Your program is encoded to an intermediate representation in JSON which the runtime library uses to run your program in the browser."
       CLOSE
+    CLOSE
+    OPEN section
+      OPEN div
+      ATTRIBUTE style "padding: 1rem 0"
+        OPEN h1
+        ATTRIBUTE style "margin: 0; display: inline-block; padding: 1rem; background-color: gold; border: solid 3px black; box-shadow: 0.5rem 0.5rem crimson;"
+          PRINT "Features"
+        CLOSE
+      CLOSE
+      OPEN ul
+        OPEN li
+          PRINT "Rendering HTML tags with "
+          OPEN code
+            PRINT "OPEN"
+          CLOSE
+          PRINT " and "
+          OPEN code
+            PRINT "CLOSE"
+          CLOSE
+        CLOSE
+        OPEN li
+          PRINT "Unstructured control flow with "
+          OPEN code
+            PRINT "GOTO"
+          CLOSE
+          PRINT " and "
+          OPEN code
+            PRINT "IF"
+          CLOSE
+        CLOSE
+        OPEN li
+          PRINT "Variable assignment and reassignment"
+        CLOSE
+        OPEN li
+          PRINT "Event listeners using "
+          OPEN code
+            PRINT "GOTO"
+          CLOSE
+        CLOSE
+        OPEN li
+          PRINT "Binding attributes such as "
+          OPEN code
+            PRINT "input value"
+          CLOSE
+          PRINT " using "
+          OPEN code
+            PRINT "BIND"
+          CLOSE
+        CLOSE
+        OPEN li
+          PRINT "Adding attributes such as "
+          OPEN code
+            PRINT "style"
+          CLOSE
+          PRINT " to tags using "
+          OPEN code
+            PRINT "ATTRIBUTE"
+          CLOSE
+        CLOSE
+        OPEN li
+          PRINT "Strings and printing text and values with "
+          OPEN code
+            PRINT "PRINT"
+          CLOSE
+        CLOSE
+        OPEN li
+          PRINT "Numbers and basic arithmetic operators like "
+          OPEN code
+            PRINT "+"
+          CLOSE
+        CLOSE
+        OPEN li
+          PRINT "Booleans expressions such as "
+          OPEN code
+            PRINT "="
+          CLOSE
+          PRINT " for equality"
+        CLOSE
+        OPEN li
+          PRINT "Arrays (heterogenous, so can contain different types)"
+        CLOSE
+      CLOSE
+    CLOSE
+    OPEN section
+      OPEN div
+      ATTRIBUTE style "padding: 1rem 0"
+        OPEN h1
+        ATTRIBUTE style "margin: 0; display: inline-block; padding: 1rem; background-color: gold; border: solid 3px black; box-shadow: 0.5rem 0.5rem crimson;"
+          PRINT "Demos"
+        CLOSE
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "padding: 1rem 0"
+        OPEN h2
+        ATTRIBUTE style "margin: 0; display: inline-block; padding: 1rem; border: solid 2px black; box-shadow: 0.5rem 0.5rem crimson;"
+          PRINT "Hello World!"
+        CLOSE
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "border: solid 2px black; padding: 1rem; box-shadow: 0.5rem 0.5rem crimson; margin: 1rem 0;"
+        OPEN pre
+        ATTRIBUTE style "margin: 0"
+          OPEN code
+            PRINT "OPEN h1\nPRINT \"Hello World!\"\nCLOSE\nEND"
+          CLOSE
+        CLOSE
+      CLOSE
+      
+      OPEN div
+      ATTRIBUTE style "border: solid 2px black; padding: 1rem; box-shadow: 0.5rem 0.5rem gold; margin: 1rem 0;"
+
+OPEN h1
+PRINT "Hello World!"
+CLOSE
+
+      CLOSE
+      
+      OPEN div
+      ATTRIBUTE style "padding: 1rem 0"
+        OPEN h2
+        ATTRIBUTE style "margin: 0; display: inline-block; padding: 1rem; border: solid 2px black; box-shadow: 0.5rem 0.5rem crimson;"
+          PRINT "Button counter"
+        CLOSE
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "border: solid 2px black; padding: 1rem; box-shadow: 0.5rem 0.5rem crimson; margin: 1rem 0;"
+        OPEN pre
+        ATTRIBUTE style "margin: 0"
+          OPEN code
+            PRINT "N = 0\nGOTO 20\n10 N = N + 1\nCLEAR\n20 OPEN p\nPRINT \"The button has been clicked \"\nPRINT N\nPRINT \" times\"\nCLOSE\nOPEN button\nATTRIBUTE onclick GOTO 10\nPRINT \"Click me!\"\nCLOSE\nEND\n"
+          CLOSE
+        CLOSE
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "border: solid 2px black; padding: 1rem; box-shadow: 0.5rem 0.5rem gold; margin: 1rem 0;"
+
+OPEN p
+PRINT "The button has been clicked "
+PRINT nbutton
+PRINT " times"
+CLOSE
+OPEN button
+ATTRIBUTE onclick GOTO 10
+PRINT "Click me!"
+CLOSE
+
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "padding: 1rem 0"
+        OPEN h2
+        ATTRIBUTE style "margin: 0; display: inline-block; padding: 1rem; border: solid 2px black; box-shadow: 0.5rem 0.5rem crimson;"
+          PRINT "Voter"
+        CLOSE
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "border: solid 2px black; padding: 1rem; box-shadow: 0.5rem 0.5rem crimson; margin: 1rem 0;"
+        OPEN pre
+        ATTRIBUTE style "margin: 0"
+          OPEN code
+            PRINT "left = 0\nright = 0\ngoto 13\n\n3 left = left + 1\ngoto 13\n5 right = right + 1\ngoto 13\n\n7 result = \"Tie\"\ngoto 16\n9 result = \"Left\"\ngoto 16\n11 result = \"Right\"\ngoto 16\n\n13 if left = right then 7\nif left > right then 9\nif right > left then 11\n\n16 open p\nprint left\nopen button\nattribute onclick goto 3\nprint \"Vote left \"\nclose\nopen button\nattribute onclick goto 5\nprint \"Vote right \"\nclose\nprint right\nclose\n\nopen p\nprint \"Winner :\"\nprint result\nclose\nend"
+          CLOSE
+        CLOSE
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "border: solid 2px black; padding: 1rem; box-shadow: 0.5rem 0.5rem gold; margin: 1rem 0;"
+
+open p
+print left
+open button
+attribute onclick goto 53
+print "Vote left "
+close
+open button
+attribute onclick goto 55
+print "Vote right "
+close
+print right
+close
+
+open p
+print "Winner :"
+print result
+close
+
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "padding: 1rem 0"
+        OPEN h2
+        ATTRIBUTE style "margin: 0; display: inline-block; padding: 1rem; border: solid 2px black; box-shadow: 0.5rem 0.5rem crimson;"
+          PRINT "Todo"
+        CLOSE
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "border: solid 2px black; padding: 1rem; box-shadow: 0.5rem 0.5rem crimson; margin: 1rem 0;"
+        OPEN pre
+        ATTRIBUTE style "margin: 0"
+          OPEN code
+            PRINT "0 len = 0\n1 DIM todos(0)\n2 next = \"\"\n3 GOTO 13\n4 DIM cpy(len + 1)\n5 i = 0\n6 IF i = len THEN 10\n7 cpy(i) = todos(i)\n8 i = i + 1\n9 GOTO 6\n10 todos = cpy\n11 todos(len) = next\n12 len = len + 1\n13 i = 0\n14 IF i = len THEN 23\n15 OPEN p\n16 OPEN input\n17 ATTRIBUTE type \"checkbox\"\n18 CLOSE\n19 PRINT todos(i)\n20 CLOSE\n21 i = i + 1\n22 GOTO 14\n23 OPEN input\n24 BIND value next\n25 CLOSE\n26 OPEN button\n27 ATTRIBUTE onclick GOTO 4\n28 PRINT \"Add\"\n29 CLOSE\n30 END"
+          CLOSE
+        CLOSE
+      CLOSE
+
+      OPEN div
+      ATTRIBUTE style "border: solid 2px black; padding: 1rem; box-shadow: 0.5rem 0.5rem gold; margin: 1rem 0;"
+
+213 i = 0
+214 IF i = len THEN 223
+215 OPEN p
+216 OPEN input
+217 ATTRIBUTE type "checkbox"
+218 CLOSE
+219 PRINT todos(i)
+220 CLOSE
+221 i = i + 1
+222 GOTO 214
+223 OPEN input
+224 BIND value next
+225 CLOSE
+226 OPEN button
+227 ATTRIBUTE onclick GOTO 80
+228 PRINT "Add"
+229 CLOSE
+
+      CLOSE
+
     CLOSE
   CLOSE
 CLOSE
