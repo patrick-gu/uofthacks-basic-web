@@ -21,7 +21,8 @@ type Token =
   | { type: "percent" }
   | { type: "lparen" }
   | { type: "rparen" }
-  | { type: "equal" };
+  | { type: "equal" }
+  | { type: "greater" };
 
 const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const numbers = "01234566789";
@@ -33,6 +34,7 @@ const singleTokens = {
   "(": "lparen",
   ")": "rparen",
   "=": "equal",
+  ">": "greater",
 };
 
 function parseLine(line: string): void {
