@@ -36,7 +36,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./runtime/dist/index.html
+          path: ./runtime/dist
 
   # Deployment job
   deploy:
