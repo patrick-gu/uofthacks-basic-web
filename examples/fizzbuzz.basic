@@ -1,9 +1,9 @@
 N = 1
-GOTOIF N = 100 19
+IF N = 100 THEN 19
 OPEN p
-GOTOIF (N % 15) = 0 8
-GOTOIF (N % 3) = 0 11
-GOTOIF (N % 5) = 0 14
+IF (N % 15) = 0 THEN 8
+IF (N % 3) = 0 THEN 11
+IF (N % 5) = 0 THEN 14
 PRINT N
 GOTO 16
 ATTRIBUTE style "color: purple"
