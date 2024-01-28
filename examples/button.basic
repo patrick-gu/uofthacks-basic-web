@@ -1,0 +1,14 @@
+N = 0
+GOTO 20
+10 N = N + 1
+CLEAR
+20 OPEN p
+PRINT "The button has been clicked "
+PRINT N
+PRINT " times"
+CLOSE
+OPEN button
+ATTRIBUTE onclick GOTO 10
+PRINT "Click me!"
+CLOSE
+END

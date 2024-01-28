@@ -1,0 +1,38 @@
+left = 0
+right = 0
+goto 13
+
+3 left = left + 1
+goto 13
+5 right = right + 1
+goto 13
+
+7 result = "Tie"
+goto 16
+9 result = "Left"
+goto 16
+11 result = "Right"
+goto 16
+
+13 if left = right then 7
+if left > right then 9
+if right > left then 11
+
+16 open p
+print left
+open button
+attribute onclick goto 3
+print "Vote left "
+close
+open button
+attribute onclick goto 5
+print "Vote right "
+close
+print right
+close
+
+open p
+print "Winner :"
+print result
+close
+end

@@ -1,20 +1,20 @@
-N = 1
-IF N = 100 THEN 19
-OPEN p
-IF (N % 15) = 0 THEN 8
-IF (N % 3) = 0 THEN 11
-IF (N % 5) = 0 THEN 14
-PRINT N
-GOTO 16
-ATTRIBUTE style "color: purple"
-PRINT "fizzbuzz"
-GOTO 16
-ATTRIBUTE style "color: red"
-PRINT "fizz"
-GOTO 16
-ATTRIBUTE style "color: buzz"
-PRINT "buzz"
-CLOSE p
-N = N + 1
-GOTO 1
-END
+0 N = 1
+1 IF N = 101 THEN 19
+2 OPEN p
+3 IF (N % 15) = 0 THEN 8
+4 IF (N % 3) = 0 THEN 11
+5 IF (N % 5) = 0 THEN 14
+6 PRINT N
+7 GOTO 16
+8 ATTRIBUTE style "color: purple"
+9 PRINT "fizzbuzz"
+10 GOTO 16
+11 ATTRIBUTE style "color: red"
+12 PRINT "fizz"
+13 GOTO 16
+14 ATTRIBUTE style "color: blue"
+15 PRINT "buzz"
+16 CLOSE
+17 N = N + 1
+18 GOTO 1
+19 END
