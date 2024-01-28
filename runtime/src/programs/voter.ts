@@ -1,3 +1,5 @@
+import { Program } from "../../../shared/program";
+
 export const voter: Program = {
   statements: [
     {

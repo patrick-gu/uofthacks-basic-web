@@ -1,31 +1,31 @@
-len = 0
-DIM todos(0)
-next = ""
-GOTO 13
-DIM cpy(len + 1)
-i = 0
-GOTOIF i = len 10
-cpy(i) = todos(i)
-i = i + 1
-GOTO 6
-todos = cpy
-todos(len) = next
-len = len + 1
-i = 0
-GOTOIF i = len 23
-OPEN p
-OPEN input
-ATTRIBUTE type "checkbox"
-CLOSE input
-PRINT todos(i)
-CLOSE p
-i = i + 1
-GOTO 14
-OPEN input
-BIND value next
-CLOSE input
-OPEN button
-ATTRIBUTE onclick GOTO 4
-PRINT "Add"
-CLOSE
-END
+0 len = 0
+1 DIM todos(0)
+2 next = ""
+3 GOTO 13
+4 DIM cpy(len + 1)
+5 i = 0
+6 IF i = len THEN 10
+7 cpy(i) = todos(i)
+8 i = i + 1
+9 GOTO 6
+10 todos = cpy
+11 todos(len) = next
+12 len = len + 1
+13 i = 0
+14 IF i = len THEN 23
+15 OPEN p
+16 OPEN input
+17 ATTRIBUTE type "checkbox"
+18 CLOSE
+19 PRINT todos(i)
+20 CLOSE
+21 i = i + 1
+22 GOTO 14
+23 OPEN input
+24 BIND value next
+25 CLOSE
+26 OPEN button
+27 ATTRIBUTE onclick GOTO 4
+28 PRINT "Add"
+29 CLOSE
+30 END

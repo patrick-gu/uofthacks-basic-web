@@ -1,3 +1,5 @@
+import { Expression, Program } from "../../shared/program";
+
 function execute(prog: Program, ctx: Context) {
   while (ctx.ip < prog.statements.length) {
     const stmt = prog.statements[ctx.ip];
@@ -354,7 +356,9 @@ function getBody(): HTMLBodyElement {
   return body;
 }
 
-import { voter } from "./programs/voter";
+// import { voter } from "./programs/voter";
+// import { todos } from "./programs/todos";
+import prog from "../data/data.json";
 
 function main() {
   const root: Root = {
@@ -367,7 +371,7 @@ function main() {
     root,
     currentTag: root,
   };
-  execute(voter, ctx);
+  execute(prog as Program, ctx);
 }
 
 window.addEventListener("DOMContentLoaded", main);

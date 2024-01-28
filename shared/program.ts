@@ -1,59 +1,59 @@
-interface LiteralString {
+export interface LiteralString {
   type: "literalString";
   value: string;
 }
 
-interface LiteralInteger {
+export interface LiteralInteger {
   type: "literalInteger";
   value: number;
 }
 
-interface LiteralBoolean {
+export interface LiteralBoolean {
   type: "literalBoolean";
   value: boolean;
 }
 
-interface Add {
+export interface Add {
   type: "add";
   left: Expression;
   right: Expression;
 }
 
-interface Modulo {
+export interface Modulo {
   type: "modulo";
   left: Expression;
   right: Expression;
 }
 
-interface Equals {
+export interface Equals {
   type: "equals";
   left: Expression;
   right: Expression;
 }
 
-interface Greater {
+export interface Greater {
   type: "greater";
   left: Expression;
   right: Expression;
 }
 
-interface VariableExpression {
+export interface VariableExpression {
   type: "variable";
   variable: string;
 }
 
-interface Callback {
+export interface Callback {
   type: "callback";
   line: number;
 }
 
-interface ArrayAccess {
+export interface ArrayAccess {
   type: "arrayAccess";
   array: Expression;
   index: Expression;
 }
 
-type Expression =
+export type Expression =
   | LiteralString
   | LiteralInteger
   | LiteralBoolean
@@ -65,58 +65,58 @@ type Expression =
   | Callback
   | ArrayAccess;
 
-interface Assign {
+export interface Assign {
   type: "assign";
   lvalue: Expression;
   rvalue: Expression;
 }
 
-interface Print {
+export interface Print {
   type: "print";
   value: Expression;
 }
 
-interface Clear {
+export interface Clear {
   type: "clear";
 }
 
-interface Open {
+export interface Open {
   type: "open";
   tag: string;
 }
 
-interface Close {
+export interface Close {
   type: "close";
 }
 
-interface Attribute {
+export interface Attribute {
   type: "attribute";
   key: string;
   value: Expression;
 }
 
-interface End {
+export interface End {
   type: "end";
 }
 
-interface Goto {
+export interface Goto {
   type: "goto";
   statement: number;
 }
 
-interface GotoIf {
+export interface GotoIf {
   type: "gotoIf";
   cond: Expression;
   statement: number;
 }
 
-interface Dim {
+export interface Dim {
   type: "dim";
   lvalue: Expression;
   length: Expression;
 }
 
-interface Bind {
+export interface Bind {
   type: "bind";
   key: string;
   // for flexibility, we will evaluate this lvalue as eagerly as possible
@@ -125,7 +125,7 @@ interface Bind {
   lvalue: Expression;
 }
 
-type Statement =
+export type Statement =
   | Assign
   | Print
   | Clear
@@ -138,6 +138,6 @@ type Statement =
   | Dim
   | Bind;
 
-interface Program {
+export interface Program {
   statements: Statement[];
 }

@@ -1,3 +1,5 @@
+import { Program } from "../../../shared/program";
+
 export const buttonClick: Program = {
   statements: [
     {
