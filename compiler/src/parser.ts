@@ -63,13 +63,30 @@ function parseLine(line: string): void {
     } else if (line.charAt(i) == '"') {
       const start = i;
       i++;
-      while (i < line.length && line.charAt(i) != '"') {
-        i++;
+      let text = "";
+      while (i < line.length) {
+        if (line.charAt(i) === '"') {
+          break;
+        }
+        if (line.charAt(i) === "\\") {
+          i++;
+          if (i == line.length) {
+            throw new Error("Unclosed string");
+          }
+          if (line.charAt(i) === '"' || line.charAt(i) === "\\") {
+            text += line.charAt(i);
+            i++;
+          } else {
+            throw new Error("Unknown escape");
+          }
+        } else {
+          text += line.charAt(i);
+          i++;
+        }
       }
       if (i == line.length) {
         throw new Error("Unclosed string");
       }
-      const text = line.substring(start + 1, i);
       i++;
       tokens.push({ type: "string", inner: text });
     } else if (line.charAt(i) in singleTokens) {
