@@ -15,5 +15,58 @@ ATTRIBUTE style "background-color: white; max-width: 75%; margin-left: auto; mar
       CLOSE
     CLOSE
   CLOSE
+  OPEN main
+    OPEN section
+      OPEN div
+      ATTRIBUTE style "padding: 1rem 0"
+        OPEN h1
+        ATTRIBUTE style "margin: 0; display: inline-block; padding: 1rem; background-color: gold; border: solid 3px black; box-shadow: 0.5rem 0.5rem crimson;"
+          PRINT "About"
+        CLOSE
+      CLOSE
+      OPEN p
+        PRINT "Tired of using modern languages and frameworks for your web development projects?"
+      CLOSE
+      OPEN p
+        PRINT "Yearning for a fresh perspective that taps into the roots of programming history?"
+      CLOSE
+      OPEN p
+        PRINT "Introducing [name] where old-school meets cutting-edge to revolutionize your web development experience. This isn't just a trip down memory lane, it's an opportunity to combine the wisdom of the past with the possibilities of the present to craft the development experience of the future."
+      CLOSE
+      OPEN p
+        PRINT "By the way, "
+        OPEN strong
+          PRINT "this page"
+        CLOSE
+        PRINT " was created in BASIC Web!"
+      CLOSE
+    CLOSE
+    OPEN section
+      OPEN div
+      ATTRIBUTE style "padding: 1rem 0"
+        OPEN h1
+        ATTRIBUTE style "margin: 0; display: inline-block; padding: 1rem; background-color: gold; border: solid 3px black; box-shadow: 0.5rem 0.5rem crimson;"
+          PRINT "Solution"
+        CLOSE
+      CLOSE
+      OPEN p
+        PRINT "BASIC Web is a programming language inspired by variants of BASIC. It allows you to construct DOM nodes, handle events, and bind data, similar to modern frameworks like React. The set of features in the language is limited; however, with unconditional jumps ("
+        OPEN code
+          PRINT "GOTO"
+        CLOSE
+        PRINT "), conditional jumps ("
+        OPEN code
+          PRINT "IF"
+        CLOSE
+        PRINT "), and variables of type string, number, boolean, and array, you can create anything you desire."
+      CLOSE
+      OPEN p
+        PRINT "The programming model is imperative. The code is run once to initially render the page. Upon each event, the program jumps to a certain instruction and begins executing again, and may rerender the entire page."
+      CLOSE
+      OPEN p
+        PRINT "The compiler and runtime library are written in TypeScript. When you compile your code, you get an HTML file with embedded JavaScript. Your program is encoded to an intermediate representation in JSON which the runtime library uses to run your program in the browser."
+      CLOSE
+    CLOSE
+  CLOSE
 CLOSE
 END
