@@ -77,7 +77,7 @@ ATTRIBUTE style "background-color: white; max-width: 75%; margin-left: auto; mar
         PRINT "Yearning for a fresh perspective that taps into the roots of programming history?"
       CLOSE
       OPEN p
-        PRINT "Introducing [name] where old-school meets cutting-edge to revolutionize your web development experience. This isn't just a trip down memory lane, it's an opportunity to combine the wisdom of the past with the possibilities of the present to craft the development experience of the future."
+        PRINT "Introducing BASIC Web, where old-school meets cutting-edge to revolutionize your web development experience. This isn't just a trip down memory lane, it's an opportunity to combine the wisdom of the past with the possibilities of the present to craft the development experience of the future."
       CLOSE
       OPEN p
         PRINT "By the way, "

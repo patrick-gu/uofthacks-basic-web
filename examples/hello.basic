@@ -1,0 +1,4 @@
+OPEN h1
+PRINT "Hello World!"
+CLOSE
+END
