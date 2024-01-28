@@ -76,6 +76,9 @@ function parseLine(line: string): void {
           if (line.charAt(i) === '"' || line.charAt(i) === "\\") {
             text += line.charAt(i);
             i++;
+          } else if (line.charAt(i) === "n") {
+            text += "\n";
+            i++;
           } else {
             throw new Error("Unknown escape");
           }
