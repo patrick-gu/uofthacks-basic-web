@@ -1,5 +1,5 @@
 import { exists, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
-import { Expression, Program, Statement } from "../../shared/program";
+import { Callback, Expression, Program, Statement } from "../../shared/program";
 import { resolve } from "path";
 
 const readFileLines = (filename) =>
@@ -327,6 +327,8 @@ function arrayAccess(tokens: Token[], i: number): [Expression, number] {
   return [left, i];
 }
 
+const callbacks: Callback[] = [];
+
 function base(tokens: Token[], i: number): [Expression, number] {
   if (i >= tokens.length) {
     throw new Error("unexpected eof for expression");
@@ -350,7 +352,12 @@ function base(tokens: Token[], i: number): [Expression, number] {
       if (t.text === "goto") {
         const [line, i1] = expect(tokens, i, "number");
         i = i1;
-        return [{ type: "callback", line: line.value }, i];
+        const obj: Callback = {
+          type: "callback",
+          line: line.value,
+        };
+        callbacks.push(obj);
+        return [obj, i];
       }
       return [{ type: "variable", variable: t.text }, i];
     }
@@ -409,6 +416,14 @@ for (const stmt of prog.statements) {
     }
     stmt.statement = realLine;
   }
+}
+
+for (const callback of callbacks) {
+  const realLine = lineMap.get(callback.line);
+  if (realLine === undefined) {
+    throw new Error(`not found line ${callback.line} callback`);
+  }
+  callback.line = realLine;
 }
 
 const dir = resolve(__dirname, "../../../../runtime/data");
