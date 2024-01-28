@@ -335,13 +335,17 @@ function renderNode(
           };
       }
     }
-    res.onchange = (e) => {
+    const last = res.onchange;
+    res.onchange = function (e) {
       for (const [key, value] of node.bindings.entries()) {
         const v: string = (e.target as any)[key];
         value({
           type: "string",
           value: v,
         });
+      }
+      if (last !== null) {
+        (last as any)(e);
       }
     };
     res.replaceChildren(...node.content.map((n) => renderNode(prog, ctx, n)));

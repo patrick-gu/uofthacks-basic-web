@@ -1,9 +1,22 @@
+val = ""
+
+1 CLEAR
 OPEN h1
     PRINT "This is a demo app!"
 CLOSE
 
+OPEN p
+    PRINT "You typed: "
+    PRINT val
+CLOSE
+OPEN input
+BIND value val
+ATTRIBUTE onchange GOTO 1
+CLOSE
+
+
 i = 1
-10 IF i = 11 THEN 20
+10 IF i = 21 THEN 20
     OPEN p
     PRINT "Line #"
     PRINT i
