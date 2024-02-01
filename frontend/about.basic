@@ -63,6 +63,12 @@ ATTRIBUTE style "background-color: white; max-width: 75%; margin-left: auto; mar
   CLOSE
   OPEN main
     OPEN section
+      OPEN a
+        ATTRIBUTE href "https://github.com/patrick-gu/uofthacks-basic-web"
+        PRINT "GitHub Repo"
+      CLOSE
+    CLOSE
+    OPEN section
       OPEN div
       ATTRIBUTE style "padding: 1rem 0"
         OPEN h1
@@ -79,7 +85,8 @@ ATTRIBUTE style "background-color: white; max-width: 75%; margin-left: auto; mar
       OPEN p
         PRINT "Introducing BASIC Web, where old-school meets cutting-edge to revolutionize your web development experience. This isn't just a trip down memory lane, it's an opportunity to combine the wisdom of the past with the possibilities of the present to craft the development experience of the future."
       CLOSE
-      OPEN p
+      OPEN a
+        ATTRIBUTE href "https://github.com/patrick-gu/uofthacks-basic-web/blob/main/frontend/about.basic"
         PRINT "By the way, "
         OPEN strong
           PRINT "this page"
